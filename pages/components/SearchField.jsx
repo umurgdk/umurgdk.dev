@@ -13,7 +13,7 @@ export default function SearchField({ placeholder }) {
                    h-8
                    border-1
                    text-sm
-                   px-4 pl-9
+                   px-4 pl-8
                    shadow-inner"
             placeholder={placeholder} />
     </div>
