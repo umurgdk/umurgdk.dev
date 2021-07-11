@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icons/sort</title>
+    <defs>
+        <filter color-interpolation-filters="auto" id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.419608 0 0 0 0 0.447059 0 0 0 0 0.501961 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Homepage" transform="translate(-913.000000, -740.000000)">
+            <g id="Content" transform="translate(240.000000, -33.000000)">
+                <g id="Articles" transform="translate(0.000000, 712.000000)">
+                    <g id="icons/sort" transform="translate(660.000000, 50.000000)" filter="url(#filter-1)">
+                        <g transform="translate(13.000000, 11.000000)">
+                            <polygon id="Path" points="0 0 18 0 18 18 0 18"></polygon>
+                            <path d="M2.25,13.5 L6.75,13.5 L6.75,12 L2.25,12 L2.25,13.5 Z M2.25,4.5 L2.25,6 L15.75,6 L15.75,4.5 L2.25,4.5 Z M2.25,9.75 L11.25,9.75 L11.25,8.25 L2.25,8.25 L2.25,9.75 Z" id="Shape" fill="#000000" fill-rule="nonzero"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
