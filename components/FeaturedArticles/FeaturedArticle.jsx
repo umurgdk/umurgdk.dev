@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import ImageContent from '../../../public/article-images/custom-nstextfield/ImageContent@2x.png'
+import ImageContent from '../../public/article-images/custom-nstextfield/ImageContent@2x.png'
 import PostMetadata from '../PostMetadata'
 
 export default function FeaturedArticle() {

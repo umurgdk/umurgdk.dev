@@ -33,3 +33,18 @@
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.10),
               0 16px 32px 0 rgba(0,0,0,0.05);
 }
+
+.image-container {
+  max-width: 100%;
+}
+
+.image-container > div {
+  position: unset !important;
+}
+
+.image-container img {
+  object-fit: none;
+  /* width: 100% !important; */
+  position: relative !important;
+  height: unset !important;
+}
