@@ -191,9 +191,14 @@ section h1 strong {
         border: 0;
     }
 
+    html,
     body {
-        background-color: var(--content-background);
-        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(243, 244, 246, 0.00) 250px);
+        -webkit-overflow-scrolling: touch !important;
+        overflow: auto !important;
+    }
+
+    body {
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, var(--content-background) 250px);
     }
 
     header {
@@ -209,10 +214,10 @@ section h1 strong {
         background-color: var(--site-background);
         box-shadow: none;
         color: var(--title-color);
-        outline: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 8px;
         font-size: 16px;
-        -webkit-appearance: none;
+        /* -webkit-appearance: none; */
     }
 
     nav {
@@ -247,6 +252,10 @@ section h1 strong {
         align-self: flex-start;
     }
 
+    .article-list-item-title {
+        font-size: 16px;
+        padding-bottom: 4px
+    }
 
     .article-list-item-info {
         min-width: auto;
