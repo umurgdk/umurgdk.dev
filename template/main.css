@@ -203,7 +203,8 @@ section h1 strong {
         box-shadow: none;
         color: var(--title-color);
         outline: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 14px;
+        font-size: 16px;
+        -webkit-appearance: none;
     }
 
     nav {
