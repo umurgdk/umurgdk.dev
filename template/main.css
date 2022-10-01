@@ -193,6 +193,7 @@ section h1 strong {
 
     body {
         background-color: var(--content-background);
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(243, 244, 246, 0.00) 250px);
     }
 
     header {
@@ -200,6 +201,7 @@ section h1 strong {
         flex-direction: column;
         align-items: stretch;
         gap: 16px;
+        background-image: none;
     }
 
     input[type=search] {
