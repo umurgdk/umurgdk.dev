@@ -187,6 +187,12 @@ section h1 strong {
         padding: 0;
         margin: 0;
         width: 100vw;
+        background: none;
+        border: 0;
+    }
+
+    body {
+        background-color: var(--content-background);
     }
 
     header {
