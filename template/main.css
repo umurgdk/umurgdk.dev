@@ -197,12 +197,12 @@ section h1 strong {
     }
 
     input[type=search] {
-        border-radius: 8px;
         height: 40px;
         background-color: var(--site-background);
         box-shadow: none;
         color: var(--title-color);
         outline: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
         font-size: 16px;
         -webkit-appearance: none;
     }
