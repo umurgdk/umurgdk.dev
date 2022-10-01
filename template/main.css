@@ -231,7 +231,7 @@ section h1 strong {
     }
 
     section h1 {
-        font-size: 24px;
+        font-size: 20px;
     }
 
     .article-list {
@@ -255,8 +255,12 @@ section h1 strong {
     }
 
     .article-list-item-title {
-        font-size: 16px;
+        font-size: 18px;
         padding-bottom: 4px
+    }
+
+    .article-list-item-description {
+        font-size: 16px;
     }
 
     .article-list-item-info {
@@ -267,6 +271,10 @@ section h1 strong {
     .article-list-item-tags {
         padding: 16px 0 12px;
         gap: 16px;
+    }
+
+    .article-list-item-tags a {
+        font-size: 14px;
     }
 }
 
