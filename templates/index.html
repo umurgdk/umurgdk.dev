@@ -1,0 +1,15 @@
+{% extends '_base.html' %}
+
+{% import '_macros.html' as macros %}
+
+{% block title %}{% endblock title %}
+{% block content %}
+    {% include 'partials/header.html' %}
+    {% include 'partials/navigation.html' %}
+
+    <section>
+        <h1><strong>ARTICLES</strong></h1>
+        {% set articles = get_section(path='articles/_index.md') %}
+        {{ macros::article_list(pages=articles.pages) }}
+    </section>
+{% endblock %}

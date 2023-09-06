@@ -1,0 +1,24 @@
+{% macro article_list(pages) %}
+<div class="article-list">
+    {% for post in pages %}
+    <div class="article-list-item">
+        <a href="{{ post.permalink | safe }}">
+            <img srcset="
+            {% for size, file in post.extra.thumbnails %}
+            {{ post.path | safe }}{{file | safe}} {{size}}{% if not loop.last %}, {% endif %}
+            {% endfor %}" alt="">
+        </a>
+        <div class="article-list-item-info">
+            <a href="{{ post.permalink | safe }}" class="article-list-item-title">{{ post.title }}</a>
+            <a href="{{ post.permalink | safe }}" class="article-list-item-description">{{ post.description }}</a>
+            <p class="article-list-item-tags">
+                {% for tag in post.taxonomies.tags %}
+                    <a href="{{ get_taxonomy_url(kind='tags', name=tag) | safe }}">#{{tag}}</a>
+                {% endfor %}
+            </p>
+        </div>
+        <span>{{ post.date | date(format="%_d %b %Y") }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endmacro article_list %}

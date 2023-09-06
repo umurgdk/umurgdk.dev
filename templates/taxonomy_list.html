@@ -1,0 +1,14 @@
+{% extends '_base.html' %}
+{% block title %}{{ taxonomy.name | title }}{{ super() }}{% endblock title %}
+{% block content %}
+    {% include 'partials/header.html' %}
+    {% include 'partials/navigation.html' %}
+
+    <h1>{{ taxonomy.name }}</h1>
+
+    <ul>
+    {% for term in terms %}
+        <li><a href="{{ config.base_url }}{{ term.path }}">{{ term.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock content %}
