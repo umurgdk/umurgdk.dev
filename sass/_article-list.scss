@@ -2,6 +2,7 @@
 .article-list {
     background-color: var(--article-list-background);
     margin: 40px 0;
+    padding: 0 calc(var(--content-padding) - 13px);
 }
 
 .article-list-item {

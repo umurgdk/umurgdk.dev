@@ -20,7 +20,7 @@
         </div>
     </section>
 
-    <section>
+    <section class="section-highlight">
         <h1>ARTICLES</h1>
         {% set articles = get_section(path='articles/_index.md') %}
         {{ macros::article_list(pages=articles.pages) }}
