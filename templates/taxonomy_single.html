@@ -1,10 +1,10 @@
-{% extends '_base.html' %}
+{% extends 'base.html' %}
 
-{% import '_macros.html' as macros %}
+{% import 'macros.html' as macros %}
 
 {% block title %}{{ term.name | title }} Articles{{ super() }}{% endblock title %}
 {% block content %}
-    {% include 'partials/header.html' %}
+    {% include 'header.html' %}
 
     <section>
         <h1><strong>{{ term.name | upper }}</strong></h1>

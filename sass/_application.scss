@@ -1,7 +1,8 @@
 .application-list {
     hr {
         border: 0;
-        border-top: 1px solid var(--gray800);
+        border-top: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 1px 0 white;
     }
 }
 
@@ -10,6 +11,10 @@
     flex-direction: row;
     padding: 80px 0;
     justify-content: space-between;
+
+    &:nth-child(1) {
+        padding-top: 50px;
+    }
 
     .application-name {
         font-size: 20px;
@@ -21,11 +26,12 @@
     .badge {
         font-size: 10px;
         font-weight: 600;
-        color: var(--gray400);
-        background: var(--gray700);
         padding: 2px 6px;
         border-radius: 10px;
         display: inline-block;
+
+        color: var(--gray500);
+        background: var(--gray300);
     }
 
     .application-description {
@@ -37,6 +43,7 @@
     .application-body {
         font-size: 15px;
         margin-top: 32px;
+        color: var(--gray700);
 
         p {
             margin-bottom: 20px;
@@ -58,7 +65,7 @@
         width: 400px;
         height: 400px;
 
-        outline: 8px solid var(--gray800);
+        outline: 8px solid white;
         box-shadow: 
             0 1px 3px rgba(0,0,0,0.4),
             0 8px 15px rgba(0,0,0,0.37);
@@ -81,6 +88,28 @@
 
         .screenshot {
             border-radius: 0 23px 23px 0;
+        }
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .application-list hr {
+        border-color: var(--gray800);
+        box-shadow: none;
+    }
+
+    .application-item {
+        .badge {
+            color: var(--gray400);
+            background: var(--gray700);
+        }
+
+        .screenshot {
+            outline-color: var(--gray800);
+        }
+
+        .application-body {
+            color: var(--gray400);
         }
     }
 }

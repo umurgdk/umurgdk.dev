@@ -1,6 +1,7 @@
 +++
 title = "Spoken"
 description = "Twitch chat client for macOS"
+weight = 0
 extra.screenshots.1x = "screenshot.png"
 extra.screenshots.2x = "screenshot@2x.png"
 extra.icons.1x = "icon.png"

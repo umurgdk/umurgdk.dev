@@ -1,7 +1,11 @@
-{% extends '_base.html' %}
+{% extends 'base.html' %}
+
+{% import 'macros.html' as macros %}
+
 {% block title %}{{ taxonomy.name | title }}{{ super() }}{% endblock title %}
+
 {% block content %}
-    {% include 'partials/header.html' %}
+    {% include 'header.html' %}
 
     <h1>{{ taxonomy.name }}</h1>
 

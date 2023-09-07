@@ -1,12 +1,12 @@
-{% extends '_base.html' %}
+{% extends 'base.html' %}
 
-{% import '_macros.html' as macros %}
+{% import 'macros.html' as macros %}
 
 {% block title %}{% endblock title %}
 {% block content %}
-    {% include 'partials/header.html' %}
+    {% include 'header.html' %}
 
-    <section class="section-highlight">
+    <section class="section-highlight section-separator">
         <h1>APPLICATIONS</h1>
         {% set apps = get_section(path='applications/_index.md') %}
         <div class="application-list">

@@ -1,36 +1,102 @@
 header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     padding: 50px calc(var(--content-padding) - 13px);
+
+    .title-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .bio {
+        display: flex;
+        align-items: center;
+        padding-top: calc(56px - 8px);
+        padding-left: 5px;
+        gap: 40px;
+
+        font-size: 20px;
+        line-height: 24px;
+        color: var(--gray700);
+
+        img {
+            border: 8px solid #FFFFFF;
+            box-shadow:
+                0 1px 4px 0 rgba(0,0,0,0.10),
+                0 8px 16px 0 rgba(0,0,0,0.07);
+        }
+
+        strong {
+            color: #000;
+            font-weight: 500;
+        }
+
+        a {
+            display: inline-block;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+            margin-top: 30px;
+            border-bottom: 2px solid var(--accent);
+        }
+    }
 
     .site-name {
         padding: 0 13px;
         .site-title {
-            color: var(--gray100);
+            color: var(--gray700);
             text-decoration: none;
             font-size: 20px;
-            font-weight: 400;
+            font-weight: 500;
         }
-    }
 
-    .site-subtitle {
-        color: var(--gray500);
+        .site-subtitle {
+            color: var(--gray400);
+        }
     }
 
     input[type=search] {
         background: var(--input-background);
-        /* Sketch doesnt export gradient borders at this point */
-        box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.10),
-            inset 0 2px 3px 0 rgba(0, 0, 0, 0.10);
-    
-        border-radius: 16px;
         height: 32px;
-        border-width: 1px;
-        border: 0;
         padding: 0 16px;
-    
         outline: 0;
-        color: var(--gray100);
+
+        box-shadow: 0 1px 0 0 #FFFFFF, inset 0 1px 2px 0 rgba(0,0,0,0.10);
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 16px;
+    }
+
+    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: var(--gray400);
+        font-size: 13px;
+        opacity: 1; /* Firefox */
+      }      
+}
+
+@media (prefers-color-scheme: dark) {
+    header {
+        .site-name { 
+            .site-title { color: var(--gray100); }
+            .site-subtitle { color: var(--gray500); }
+        }
+
+        .bio {
+            color: var(--gray400);
+            strong {
+                color: var(--gray300);
+            }
+
+            img {
+                border-color: var(--gray700);
+            }
+        }
+
+        input[type=search] {
+            box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.10),
+                inset 0 2px 3px 0 rgba(0, 0, 0, 0.10);
+        
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            color: var(--gray100);
+        }
     }
 }
