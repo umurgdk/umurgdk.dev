@@ -22,3 +22,38 @@
     {% endfor %}
 </div>
 {% endmacro article_list %}
+
+{% macro imgset(root, images, width=false, height=false, alt="") %}
+    <img srcset="{% for scale, path in images %}
+        {{ root | safe }}{{ path | safe }} {{ scale }},
+        {% endfor %}
+        " {% if width %}width="{{width}}"{%endif%} {% if height %}height="{{height}}"{%endif%} alt="{{alt}}">
+{% endmacro imgset %}
+
+{% macro application(page, odd=false) %}
+<div class="application-item {% if odd %}odd{% else %}even{% endif %}">
+    <div class="application-info">
+        <div class="hstack gap16">
+            {{ self::imgset(root=page.path, images=page.extra.icons, width=48, height=48) }}
+            <div class="vstack gap3">
+                <div class="hstack gap8" style="align-items: center;">
+                    <h3 class="application-name">
+                        {{ page.title }}
+                    </h3>
+                    {% if page.extra.badge %}
+                    <span class="badge">{{ page.extra.badge }}</span>
+                    {% endif %}
+                </div>
+                <div class="application-description">{{ page.description }}</div>
+            </div>
+        </div>
+
+        <div class="application-body">
+            {{ page.content | safe }}
+        </div>
+    </div>
+    <div class="screenshot">
+        {{ self::imgset(root=page.path, images=page.extra.screenshots)}}
+    </div>
+</div>
+{% endmacro application %}

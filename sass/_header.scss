@@ -1,0 +1,36 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 50px calc(var(--content-padding) - 13px);
+
+    .site-name {
+        padding: 0 13px;
+        .site-title {
+            color: var(--gray100);
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 400;
+        }
+    }
+
+    .site-subtitle {
+        color: var(--gray500);
+    }
+
+    input[type=search] {
+        background: var(--input-background);
+        /* Sketch doesnt export gradient borders at this point */
+        box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.10),
+            inset 0 2px 3px 0 rgba(0, 0, 0, 0.10);
+    
+        border-radius: 16px;
+        height: 32px;
+        border-width: 1px;
+        border: 0;
+        padding: 0 16px;
+    
+        outline: 0;
+        color: var(--gray100);
+    }
+}

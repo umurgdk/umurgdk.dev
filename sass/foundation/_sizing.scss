@@ -1,0 +1,23 @@
+
+@media (max-width: 576px) {
+    :root {
+        --content-padding: 24px;
+        --section-padding: 24px;
+    }
+}
+
+@media (min-width: 576px) {
+    :root {
+        // Spacing and Size
+        --content-padding: 64px;
+        --section-padding: 64px;
+    }
+}
+
+@media (min-width: 1200px) {
+    :root {
+        // Spacing and Size
+        --content-padding: 120px;
+        --section-padding: 80px;
+    }
+}

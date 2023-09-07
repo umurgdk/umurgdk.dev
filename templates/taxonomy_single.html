@@ -5,7 +5,6 @@
 {% block title %}{{ term.name | title }} Articles{{ super() }}{% endblock title %}
 {% block content %}
     {% include 'partials/header.html' %}
-    {% include 'partials/navigation.html' %}
 
     <section>
         <h1><strong>{{ term.name | upper }}</strong></h1>
