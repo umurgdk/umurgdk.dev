@@ -13,6 +13,10 @@
 
     background-color: white;
 
+    a:hover {
+        color: var(--accent);
+    }
+
     img {
         background: #202122;
         width: 56px;
@@ -23,7 +27,7 @@
         font-size: 13px;
         text-align: right;
         white-space: nowrap;
-        color: #AAAAAA;
+        color: var(--gray400);
     }
 }
 
@@ -37,13 +41,13 @@
 
 .article-list-item-title {
     text-decoration: none;
-    color: var(--title-color);
+    color: var(--gray700);
     font-weight: 500;
     font-size: 15px;
 }
 
 .article-list-item-description {
-    color: var(--subtitle-color);
+    color: var(--gray500);
     text-decoration: none;
     font-size: 13px;
 }
@@ -55,7 +59,7 @@
     a {
         text-decoration: none;
         font-size: 12px;
-        color: #AAAAAA;
+        color: var(--gray400);
     }
 }
 
