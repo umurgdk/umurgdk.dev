@@ -5,24 +5,7 @@
 {% block title %}{% endblock title %}
 {% block content %}
     {% include 'header.html' %}
-
-    <section class="section-highlight section-separator">
-        <h1>APPLICATIONS</h1>
-        {% set apps = get_section(path='applications/_index.md') %}
-        <div class="application-list">
-            {% for app in apps.pages %}
-                {% set odd = loop.index%2==0 %}
-                {{ macros::application(page=app, odd=odd) }}
-                {% if not loop.last %}
-                <hr>
-                {% endif %}
-            {% endfor %}
-        </div>
-    </section>
-
-    <section class="section-highlight">
-        <h1>ARTICLES</h1>
-        {% set articles = get_section(path='articles/_index.md') %}
-        {{ macros::article_list(pages=articles.pages) }}
-    </section>
+    {% include 'applications.html' %}
+    {% include 'experiments.html' %}
+    {# {% include 'articles.html' %} #}
 {% endblock %}

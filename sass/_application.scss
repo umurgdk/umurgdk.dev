@@ -7,6 +7,7 @@
 }
 
 .application-item {
+    position: relative;
     display: flex;
     flex-direction: row;
     padding: 80px 0;
@@ -62,25 +63,24 @@
     }
 
     .screenshot {
-        width: 400px;
-        height: 400px;
-
-        outline: 8px solid white;
-        box-shadow: 
-            0 1px 3px rgba(0,0,0,0.4),
-            0 8px 15px rgba(0,0,0,0.37);
-
-        border-radius: 23px 0 0 23px;
-        overflow: hidden;
+        position: absolute;
+        img { display: block;}
     }
 
     &.even {
         .application-info  {
             padding-left: var(--content-padding);
         }
+
+        .screenshot {
+            right: 0;
+            bottom: 0;
+        }
     }
 
     &.odd {
+        justify-content: flex-end;
+
         .application-info {
             order: 1;
             padding-right: var(--content-padding);
@@ -88,6 +88,8 @@
 
         .screenshot {
             border-radius: 0 23px 23px 0;
+            left: 0;
+            bottom: 0;
         }
     }
 }

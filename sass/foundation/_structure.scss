@@ -4,10 +4,12 @@
     width: 90vw;
     max-width: 960px;
     background-color: var(--content-background);
-    border: 1px solid var(--content-border-color);
+    outline: 1px solid var(--content-border-color);
     border-top: 0;
     border-bottom: 0;
     overflow-x: hidden;
+
+    box-shadow: 0 16px 32px 0 rgba(0,0,0,0.10);
 }
 
 section {
@@ -31,14 +33,14 @@ section {
 }
 
 .section-highlight {
-    background-image: linear-gradient(180deg, #FFFFFF 0%, #F5F6F7 250px);
+    background-image: linear-gradient(180deg, #FFFFFF 0%, #F5F6F7 150px);
 }
 
 @media (prefers-color-scheme: dark) {
     .section-highlight {
         background-image: linear-gradient(to bottom,
             rgba(255, 255, 255, 0.03) 0%,
-            rgba(243, 244, 246, 0.00) 250px);    
+            rgba(243, 244, 246, 0.00) 150px);    
     }
 
     .section-separator {

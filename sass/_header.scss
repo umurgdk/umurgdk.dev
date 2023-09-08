@@ -30,7 +30,30 @@ header {
             font-weight: 500;
         }
 
-        a {
+        .social-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .social-link {
+            color: var(--gray700);
+            font-size: 13px;
+            text-decoration: none;
+
+            &:hover { color: black; }
+        }
+
+        .dot-separator {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background-color: var(--gray300);
+            border-radius: 2px;
+        }
+
+        p a {
             display: inline-block;
             font-size: 18px;
             font-weight: 600;
@@ -88,6 +111,15 @@ header {
 
             img {
                 border-color: var(--gray700);
+            }
+
+            .social-link {
+                color: var(--gray400);
+                &:hover { color: white; }
+            }
+
+            .dot-separator {
+                background-color: var(--gray700);
             }
         }
 

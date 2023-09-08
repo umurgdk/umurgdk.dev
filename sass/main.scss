@@ -4,6 +4,11 @@
 @use 'header';
 @use 'application';
 @use 'article-list';
+@use 'experiments';
+
+:root {
+    color-scheme: light dark;
+}
 
 * {
     box-sizing: border-box;

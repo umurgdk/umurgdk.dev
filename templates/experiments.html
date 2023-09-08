@@ -1,0 +1,53 @@
+{% import 'macros.html' as macros %}
+<section class="section-highlight experiments-section">
+    <h1>EXPERIMENTS</h1>
+
+    <div class="tabbed">
+        {% set experiments = get_section(path='experiments/_index.md') %}
+        {% for ext in experiments.pages %}
+            <input type="radio" class="tab" name="tabs" id="experiment-{{ loop.index }}" {% if loop.first %}checked{% endif %}>
+            <label class="tab" for="experiment-{{ loop.index }}">
+                <div class="experiment-name">{{ ext.title }}</div>
+                <div class="experiment-description">{{ ext.description }}</div>
+            </label>
+            <div class="tab-content">
+                <a href="{{ ext.extra.github_url | safe }}"><img src="/icons/github.svg" /> <span>Github Repo</span></a>
+                {% if ext.extra.is_mobile %}
+                <div class="mobile-device">
+                {% endif %}
+                {% if ext.extra.screenshots %}
+                {{ macros::imgset(root=ext.path, images=ext.extra.screenshots) }}
+                {% elif ext.extra.videos %}
+                <video loop preload playsinline disablepictureinpicture disableremoteplayback id="video-{{ loop.index }}">
+                    <source src="{{ ext.path | safe }}{{ ext.extra.videos.light | safe}}" type="video/mp4">
+                </video>
+                <div class="video-controls">
+                    <input type="checkbox" id="play-pause-{{ loop.index }}" data-video-id="video-{{ loop.index }}">    
+                    <label for="play-pause-{{ loop.index }}"></label>
+                </div>
+                {% endif %}
+                {% if ext.extra.is_mobile %}
+                </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</section>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggleButtons = document.querySelectorAll('.video-controls > input[type=checkbox]')
+        toggleButtons.forEach(checkbox => {
+            const videoEl = document.getElementById(checkbox.getAttribute('data-video-id'))
+            let isPlaying = false;
+            checkbox.addEventListener('change', () => {
+                if (isPlaying) {
+                    videoEl.pause();
+                    isPlaying = false;
+                } else {
+                    videoEl.play();
+                    isPlaying = true;
+                }
+            })
+        })
+    })
+</script>

@@ -30,8 +30,8 @@
         " {% if width %}width="{{width}}"{%endif%} {% if height %}height="{{height}}"{%endif%} alt="{{alt}}">
 {% endmacro imgset %}
 
-{% macro application(page, odd=false) %}
-<div class="application-item {% if odd %}odd{% else %}even{% endif %}">
+{% macro application(page, index, odd=false) %}
+<div class="application-item {% if odd %}odd{% else %}even{% endif %} {% if index > 1 %}section-highlight{% endif %}">
     <div class="application-info">
         <div class="hstack gap16">
             {{ self::imgset(root=page.path, images=page.extra.icons, width=48, height=48) }}

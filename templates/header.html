@@ -7,13 +7,21 @@
             <p class="site-subtitle">Software Developer & Designer</p>
         </div>
 
-        <input type="search" placeholder="Search..." name="searc" id="search" />
+        {# <input type="search" placeholder="Search..." name="searc" id="search" /> #}
     </div>
 
     <div class="bio">
         {% set bio = get_page(path='bio/index.md') %}
         {{ macros::imgset(root=bio.path, images=bio.extra.avatar, width=180+16, height=180+16, alt="avatar") }}
         <div class="content">
+            <div class="social-links">
+            {% for link in bio.extra.links %}
+                <a class="social-link" href="{{ link.url | safe }}">{{ link.name }}</a>
+                {% if not loop.last %}
+                <span class="dot-separator"></span>
+                {% endif %}
+            {% endfor %}
+            </div>
             {{ bio.content | safe }}
         </div>
     </div>

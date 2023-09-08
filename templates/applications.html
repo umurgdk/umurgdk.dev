@@ -1,0 +1,13 @@
+<section class="section-highlight section-separator">
+    <h1>APPLICATIONS</h1>
+    {% set apps = get_section(path='applications/_index.md') %}
+    <div class="application-list">
+        {% for app in apps.pages %}
+            {% set odd = loop.index%2==0 %}
+            {{ macros::application(page=app, index=loop.index, odd=odd) }}
+            {% if not loop.last %}
+            <hr>
+            {% endif %}
+        {% endfor %}
+    </div>
+</section>
