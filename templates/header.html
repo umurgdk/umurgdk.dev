@@ -12,7 +12,7 @@
 
     <div class="bio">
         {% set bio = get_page(path='bio/index.md') %}
-        {{ macros::imgset(root=bio.path, images=bio.extra.avatar, width=180+16, height=180+16, alt="avatar") }}
+        {{ macros::imgset(root=bio.path, name="avatar", image=bio.extra.avatar, width=180+16, height=180+16, alt="avatar") }}
         <div class="content">
             <div class="social-links">
             {% for link in bio.extra.links %}

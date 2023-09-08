@@ -5,7 +5,7 @@
     <div class="tabbed">
         {% set experiments = get_section(path='experiments/_index.md') %}
         {% for ext in experiments.pages %}
-            <input type="radio" class="tab" name="tabs" id="experiment-{{ loop.index }}" {% if loop.first %}checked{% endif %}>
+            <input type="radio" class="tab" name="tabs" id="experiment-{{ loop.index }}" {% if loop.index == 1 %}checked{% endif %}>
             <label class="tab" for="experiment-{{ loop.index }}">
                 <div class="experiment-name">{{ ext.title }}</div>
                 <div class="experiment-description">{{ ext.description }}</div>
@@ -15,11 +15,13 @@
                 {% if ext.extra.is_mobile %}
                 <div class="mobile-device">
                 {% endif %}
-                {% if ext.extra.screenshots %}
-                {{ macros::imgset(root=ext.path, images=ext.extra.screenshots) }}
-                {% elif ext.extra.videos %}
-                <video loop preload playsinline disablepictureinpicture disableremoteplayback id="video-{{ loop.index }}">
-                    <source src="{{ ext.path | safe }}{{ ext.extra.videos.light | safe}}" type="video/mp4">
+                {% if ext.extra.screenshot %}
+                {{ macros::imgset(root=ext.path, name="screenshot", image=ext.extra.screenshot) }}
+                {% elif ext.extra.video %}
+                <video loop playsinline disablepictureinpicture disableremoteplayback id="video-{{ loop.index }}">
+                    {% for format in ext.extra.video_formats %}
+                    <source src="{{ ext.path | safe }}{{ ext.extra.video }}.{{ format }}" type="video/{{ format }}">
+                    {% endfor %}
                 </video>
                 <div class="video-controls">
                     <input type="checkbox" id="play-pause-{{ loop.index }}" data-video-id="video-{{ loop.index }}">    

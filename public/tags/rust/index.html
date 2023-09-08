@@ -24,14 +24,14 @@
     <div class="bio">
         
         
-    <img srcset="
-        /bio/avatar.jpg 1x,
+    <picture>
         
-        /bio/avatar@2x.jpg 2x,
+            <source srcset="/bio/avatar@1x.jpg 1x, /bio/avatar@2x.jpg 2x, /bio/avatar@3x.jpg 3x, " type="image/jpg">
         
-        /bio/avatar@3x.jpg 3x,
+            <source srcset="/bio/avatar@1x.webp 1x, /bio/avatar@2x.webp 2x, /bio/avatar@3x.webp 3x, " type="image/webp">
         
-        " width="196" height="196" alt="avatar">
+        <img src="/bio/avatar@1x.jpg" alt="avatar">
+    </picture>
 
         <div class="content">
             <div class="social-links">
@@ -61,7 +61,7 @@
             
             </div>
             <p>I’m a software developer currently focused on <strong>iOS</strong> and <strong>macOS</strong> development. I like to think about system design, simplicity and user experience.</p>
-<p><a href="#">Hire me!</a></p>
+<p><a href="mailto:umurgdk@gmail.com">Hire me!</a></p>
 
         </div>
     </div>

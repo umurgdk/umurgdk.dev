@@ -5,6 +5,8 @@
 - [x] Add social links
 - [x] Fix dark mode
 - [x] Redesign applications
+- [x] Fix Hire me! button
+- [x] Provide webm (video) and webp (image) optimized formats
 
 ## 07/09/2023
 - [x] Add bio section
@@ -12,4 +14,3 @@
 - [x] Fix search input background
 
 ## Backlog
-- [ ] Fix Hire me! button

@@ -88,9 +88,9 @@
             z-index: 100000;
             pointer-events: none;
             background-image: image-set(
-                url('/images/iphone_bezels.png') 1x,
-                url('/images/iphone_bezels@2x.png') 2x,
-                url('/images/iphone_bezels@3x.png') 3x,
+                url('/images/iphone_bezels_light.png') 1x,
+                url('/images/iphone_bezels_light@2x.png') 2x,
+                url('/images/iphone_bezels_light@3x.png') 3x,
             );
         }
 
@@ -143,7 +143,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-.experiments-section {
+    .experiments-section {
         .experiment-name { color: var(--gray100); }
 
         .tabbed {
@@ -155,6 +155,16 @@
 
             .tab-content a:hover {
                 color: white
+            }
+        }
+
+        .mobile-device {
+            &::after {
+                background-image: image-set(
+                    url('/images/iphone_bezels_dark.png') 1x,
+                    url('/images/iphone_bezels_dark@2x.png') 2x,
+                    url('/images/iphone_bezels_dark@3x.png') 3x,
+                );
             }
         }
     }

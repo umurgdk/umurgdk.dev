@@ -2,11 +2,10 @@
 title = "Spoken"
 description = "Twitch chat client for macOS"
 weight = 0
-extra.screenshots.1x = "screenshot.png"
-extra.screenshots.2x = "screenshot@2x.png"
-extra.icons.1x = "icon.png"
-extra.icons.2x = "icon@2x.png"
-extra.icons.3x = "icon@3x.png"
+extra.screenshot.sizes = ['1x', '2x', '3x']
+extra.screenshot.formats = ['webp', 'png']
+extra.icon.sizes = ['1x', '2x', '3x']
+extra.icon.formats = ['webp', 'png']
 extra.badge = "BETA"
 +++
 

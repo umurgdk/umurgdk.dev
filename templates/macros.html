@@ -23,18 +23,20 @@
 </div>
 {% endmacro article_list %}
 
-{% macro imgset(root, images, width=false, height=false, alt="") %}
-    <img srcset="{% for scale, path in images %}
-        {{ root | safe }}{{ path | safe }} {{ scale }},
+{% macro imgset(root, name, image, width=false, height=false, alt="") %}
+    <picture>
+        {% for format in image.formats %}
+            <source srcset="{% for size in image.sizes %}{{ root | safe }}{{ name }}@{{ size }}.{{ format }} {{ size }}, {% endfor %}" type="image/{{ format }}">
         {% endfor %}
-        " {% if width %}width="{{width}}"{%endif%} {% if height %}height="{{height}}"{%endif%} alt="{{alt}}">
+        <img src="{{ root | safe }}{{ name }}@1x.{{ image.formats[0] }}" alt="{{ alt }}">
+    </picture>
 {% endmacro imgset %}
 
 {% macro application(page, index, odd=false) %}
 <div class="application-item {% if odd %}odd{% else %}even{% endif %} {% if index > 1 %}section-highlight{% endif %}">
     <div class="application-info">
         <div class="hstack gap16">
-            {{ self::imgset(root=page.path, images=page.extra.icons, width=48, height=48) }}
+            {{ self::imgset(root=page.path, name="icon", image=page.extra.icon, width=48, height=48) }}
             <div class="vstack gap3">
                 <div class="hstack gap8" style="align-items: center;">
                     <h3 class="application-name">
@@ -53,7 +55,7 @@
         </div>
     </div>
     <div class="screenshot">
-        {{ self::imgset(root=page.path, images=page.extra.screenshots)}}
+        {{ self::imgset(root=page.path, name="screenshot", image=page.extra.screenshot)}}
     </div>
 </div>
 {% endmacro application %}
