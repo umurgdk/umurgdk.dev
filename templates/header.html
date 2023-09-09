@@ -22,7 +22,7 @@
         <div class="content">
             <div class="social-links">
             {% for link in bio.extra.links %}
-                <a class="social-link" target="_blank" href="{{ link.url | safe }}"><img class="mobile-only" src="/icons/social_{{ link.name }}.svg" aria-hidden="true" /><span class="mobile-hidden">{{ link.name }}</span></a>
+                <a class="social-link" target="_blank" href="{{ link.url | safe }}"><img class="mobile-only" src="/icons/social_{{ link.name | lower | safe }}.svg" aria-hidden="true" /><span class="mobile-hidden">{{ link.name }}</span></a>
                 {% if not loop.last %}
                 <span class="dot-separator"></span>
                 {% endif %}
