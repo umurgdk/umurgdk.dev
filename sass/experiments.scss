@@ -1,3 +1,5 @@
+@use 'foundation/breakpoints';
+
 .experiments-section {
     .tabbed {
         display: flex;
@@ -165,6 +167,105 @@
                     url('/images/iphone_bezels_dark@2x.png') 2x,
                     url('/images/iphone_bezels_dark@3x.png') 3x,
                 );
+            }
+        }
+    }
+}
+
+@media (breakpoints.$mobile) {
+    .experiments-section {
+        .mobile-device {
+            width: 343px;
+            height: 695px;
+            padding: 21px;
+            margin: 48px auto;
+
+            &::after {
+                background-size: 343px 695px;
+            }
+        }
+
+        .tabbed {
+            display: flex;
+            max-width: calc(440px + 32px);
+            padding: 0;
+            margin: auto;
+            align-items: center;
+            gap: 0;
+            input.tab:checked + label {
+                background-color: transparent;
+            }
+            label.tab {
+                max-width: 100%;
+                padding: 0 32px;
+                align-self: flex-start;
+                margin-top: 40px;
+                border-radius: 0;
+
+                .experiment-name {
+                    font-size: 20px;
+                }
+
+                .experiment-description {
+                    font-size: 15px;
+                    margin-top: 14px;
+                }
+            }
+            .tab-content {
+                display: block;
+                position: relative;
+
+                max-width: 100%;
+                margin-left: -32px;
+                margin-right: -32px;
+                margin-top: 8px;
+                height: auto;
+                align-self: center;
+                top: 0;
+
+                & > a {
+                    margin-left: 32px;
+                    position: relative;
+                    transform: none;
+                    left: 0;
+                    color: var(--accent);
+                    top: 0;
+
+                    img { display: none; }
+                }
+
+                img {
+                    max-width: 100%;
+                    margin: 0;
+                }
+
+                &:not(:last-child)::after {
+                    content: '';
+                    display: block;
+                    margin: 0 32px;
+                    margin-top: 25px;
+                    border-bottom: 1px solid var(--gray300);
+                    box-shadow: none;
+                }
+            }
+        }
+    }
+}
+
+@media (breakpoints.$mobile) and (prefers-color-scheme: dark) {
+    .experiments-section {
+        .mobile-device {
+            &::after {
+                background-image: url('/images/iphone_bezels_dark.svg');
+            }
+        }
+
+        .tabbed {
+            .tab-content {
+                &:not(:last-child)::after {
+                    border-bottom: 1px solid black;
+                    box-shadow: 0 1px 0 rgba($color: white, $alpha: 0.06);
+                }
             }
         }
     }
