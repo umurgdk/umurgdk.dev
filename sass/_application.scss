@@ -1,3 +1,5 @@
+@use 'foundation/breakpoints';
+
 .application-list {
     hr {
         border: 0;
@@ -87,7 +89,6 @@
         }
 
         .screenshot {
-            border-radius: 0 23px 23px 0;
             left: 0;
             bottom: 0;
         }
@@ -106,13 +107,81 @@
             background: var(--gray700);
         }
 
-        .screenshot {
-            outline-color: var(--gray800);
-        }
-
         .application-body {
             color: var(--gray400);
         }
     }
 }
 
+@media (breakpoints.$mobile) {
+    .application-list {
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 88px;
+
+        hr { display: none;}
+
+        margin-bottom: 88px;
+    }
+
+    .application-item {
+        max-width: 440px;
+        align-self: center;
+        background: transparent;
+        flex-direction: column;
+        position: relative;
+        margin: 0 calc(var(--content-padding) / 2);
+        padding: 0;
+        gap: 24px;
+
+        .application-body {
+            padding: 0 16px;
+            margin-top: 0;
+            order: 1;
+            font-size: 15px;
+        }
+
+        .application-info {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            background-color: white;
+            width: 100%;
+            border-radius: 16px;
+        }
+
+        &:nth-child(1) { padding: 0; }
+
+        &.odd .application-info,
+        &.even .application-info {
+            padding: 24px 24px 0 24px;
+        }
+
+        .application-info {
+            padding: 0;
+            margin: 0;
+            order: 0;
+        }
+
+        .screenshot {
+            position: relative;
+            margin-left: -24px;
+            margin-right: -24px;
+            align-self: center;
+            img {
+                max-width: 100%;
+            }
+        }
+
+    }
+}
+
+@media (breakpoints.$mobile) and (prefers-color-scheme: dark) {
+    .application-item {
+        .application-info {
+            background-color: black;
+        }
+    }
+}

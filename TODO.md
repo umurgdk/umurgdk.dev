@@ -1,5 +1,8 @@
 # TODO
 
+## 09/09/2023
+- [ ] Fix mobile design
+
 ## 08/09/2023
 - [x] Add experiments section
 - [x] Add social links

@@ -50,12 +50,16 @@
             </div>
         </div>
 
-        <div class="application-body">
+        <div class="screenshot mobile-only">
+            {{ self::imgset(root=page.path, name="screenshot", image=page.extra.screenshot) }}
+        </div>
+
+        <div class="application-body mobile-hidden">
             {{ page.content | safe }}
         </div>
     </div>
-    <div class="screenshot">
-        {{ self::imgset(root=page.path, name="screenshot", image=page.extra.screenshot)}}
+    <div class="application-body mobile-only">
+        {{ page.content | safe }}
     </div>
 </div>
 {% endmacro application %}

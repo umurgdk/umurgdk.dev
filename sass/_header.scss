@@ -1,5 +1,7 @@
+@use 'foundation/breakpoints';
+
 header {
-    padding: 50px calc(var(--content-padding) - 13px);
+    padding: var(--section-padding) calc(var(--content-padding) - 13px);
 
     .title-bar {
         display: flex;
@@ -116,6 +118,11 @@ header {
             .social-link {
                 color: var(--gray400);
                 &:hover { color: white; }
+
+                img {
+                    filter: invert(100%);
+                    -webkit-filter: invert(100%);
+                }
             }
 
             .dot-separator {
@@ -129,6 +136,59 @@ header {
         
             border: 1px solid rgba(0, 0, 0, 0.15);
             color: var(--gray100);
+        }
+    }
+}
+
+@media (breakpoints.$mobile) {
+    header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 26px;
+
+        .avatar img {
+            width: 164px;
+            height: 164px;
+            border-radius: 82px;
+        }
+
+        .site-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bio {
+            padding-top: 0;
+
+            .content {
+                display: flex;
+                flex-direction: column;
+
+                p:last-child {
+                    text-align: center;
+                    a { border: 0; }
+                }
+            }
+
+            .social-links {
+                display: flex;
+                justify-content: center;
+                gap: 9px;
+
+                .dot-separator { display: none; }
+
+                img { 
+                    border: 0; 
+                    box-shadow: none;
+                    border-radius: 6px;
+
+                    &:hover {
+                        background: rgba($color: #000, $alpha: 0.05);
+                    }
+                }
+            }
         }
     }
 }

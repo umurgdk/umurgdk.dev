@@ -1,3 +1,9 @@
+@use 'breakpoints';
+
+:root {
+    --section-padding: 56px;
+}
+
 #content-wrapper {
     margin: 0 auto;
     min-height: 100vh;
@@ -13,7 +19,7 @@
 }
 
 section {
-    padding-top: 56px;
+    padding-top: var(--section-padding);
 
     h1 {
         color: var(--gray500);
@@ -68,4 +74,25 @@ section {
 
 .content-padding-r {
     padding-right: var(--content-padding);
+}
+
+@media (breakpoints.$mobile) {
+    :root {
+        --content-padding: 32px;
+        --section-padding: 32px;
+    }
+
+    #content-wrapper {
+        width: 100vw;
+    }
+
+    .mobile-hidden { display: none; }
+}
+
+@media (min-width: breakpoints.$small) {
+    :root {
+        --content-padding: 64px;
+        --section-padding: 56px;
+    }
+    .mobile-only { display: none };
 }
