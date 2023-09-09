@@ -136,6 +136,10 @@ header {
 }
 
 @media (breakpoints.$mobile) {
+    .section-highlight:first-child {
+        background-image: none;
+    }
+
     header {
         display: flex;
         flex-direction: column;
