@@ -118,11 +118,6 @@ header {
             .social-link {
                 color: var(--gray400);
                 &:hover { color: white; }
-
-                img {
-                    filter: invert(100%);
-                    -webkit-filter: invert(100%);
-                }
             }
 
             .dot-separator {
@@ -187,6 +182,19 @@ header {
                     &:hover {
                         background: rgba($color: #000, $alpha: 0.05);
                     }
+                }
+            }
+        }
+    }
+}
+
+@media (breakpoints.$mobile) and (prefers-color-scheme: dark) {
+    header {
+        .bio {
+            .social-link {
+                img {
+                    filter: invert(100%);
+                    -webkit-filter: invert(100%);
                 }
             }
         }
