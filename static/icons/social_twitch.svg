@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="51px" height="51px" viewBox="0 0 51 51" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icons/social_twitch</title>
+    <g id="icons/social_twitch" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill-opacity="0" fill="#FFFFFF" x="0" y="0" width="51" height="51" rx="6"></rect>
+        <path d="M21.1625954,13 L23.7215649,15.5515491 L27.8140267,15.5515491 L36,23.7135755 L36,38 L15.0231155,38 L14,33.9182018 L14,15.5515491 L18.6052004,15.5515491 L18.6052004,13 L21.1625954,13 Z M21.6750716,18.1025748 L21.6750716,21.1633347 L17.070396,21.1633347 L17.070396,35.9592317 L33.9545563,35.9592317 L33.9545563,24.7353988 L30.372209,21.1633347 L24.7449427,21.1633347 L21.6750716,18.1025748 Z M24.7446803,25.7549456 L24.7446803,31.878297 L22.698187,31.878297 L22.698187,25.7549456 L24.7446803,25.7549456 Z M30.372209,25.7549456 L30.372209,31.878297 L28.3257156,31.878297 L28.3257156,25.7549456 L30.372209,25.7549456 Z" id="Combined-Shape" fill="#000000" transform="translate(25, 25.5) scale(-1, 1) rotate(-180) translate(-25, -25.5)"></path>
+    </g>
+</svg>
