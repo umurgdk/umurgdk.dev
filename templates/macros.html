@@ -35,7 +35,7 @@
 {% macro application(page, index, odd=false) %}
 <div class="application-item {% if odd %}odd{% else %}even{% endif %} {% if index > 1 %}section-highlight{% endif %}">
     <div class="application-info">
-        <div class="hstack gap16">
+        <div class="hstack gap16" style="align-items: center;">
             {{ self::imgset(root=page.path, name="icon", image=page.extra.icon, width=48, height=48) }}
             <div class="vstack gap3">
                 <div class="hstack gap8" style="align-items: center;">

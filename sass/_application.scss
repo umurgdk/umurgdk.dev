@@ -86,6 +86,8 @@
     .application-info {
         width: calc(var(--content-padding) + 330px);
         padding-top: 10px;
+
+        img { display: block; }
     }
 
     .screenshot {
