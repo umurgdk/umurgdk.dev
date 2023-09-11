@@ -30,14 +30,16 @@
         display: flex;
         gap: 4px;
 
+        margin-top: 32px;
+
         .label {
             display: flex;
             flex-direction: column;
             gap: 0;
 
             strong {
-                color: var(--accent);
-                font-size: 15px;
+                color: var(--gray700);
+                font-size: 14px;
                 font-weight: 500;
             }
 
@@ -135,9 +137,8 @@
 
         .download-link {
             .label {
-                span {
-                    
-                }
+                strong { color: var(--gray100); }
+                span { }
             }
         }
     }
