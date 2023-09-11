@@ -26,6 +26,28 @@
         vertical-align: middle;
     }
 
+    .download-link {
+        display: flex;
+        gap: 4px;
+
+        .label {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+
+            strong {
+                color: var(--accent);
+                font-size: 15px;
+                font-weight: 500;
+            }
+
+            span {
+                color: var(--gray400);
+                font-size: 12px;
+            }
+        }
+    }
+
     .badge {
         font-size: 10px;
         font-weight: 600;
@@ -109,6 +131,14 @@
 
         .application-body {
             color: var(--gray400);
+        }
+
+        .download-link {
+            .label {
+                span {
+                    
+                }
+            }
         }
     }
 }
