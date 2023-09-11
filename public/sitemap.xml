@@ -16,6 +16,10 @@
         <loc>https://umurgdk.dev/articles/</loc>
     </url>
     <url>
+        <loc>https://umurgdk.dev/articles/distribute-macos-applications-as-dmg-images/</loc>
+        <lastmod>2023-09-11</lastmod>
+    </url>
+    <url>
         <loc>https://umurgdk.dev/articles/hello-rust/</loc>
         <lastmod>2023-09-06</lastmod>
     </url>
@@ -44,9 +48,21 @@
         <loc>https://umurgdk.dev/tags/</loc>
     </url>
     <url>
+        <loc>https://umurgdk.dev/tags/deployment/</loc>
+    </url>
+    <url>
+        <loc>https://umurgdk.dev/tags/macos/</loc>
+    </url>
+    <url>
+        <loc>https://umurgdk.dev/tags/notarization/</loc>
+    </url>
+    <url>
         <loc>https://umurgdk.dev/tags/programming/</loc>
     </url>
     <url>
         <loc>https://umurgdk.dev/tags/rust/</loc>
+    </url>
+    <url>
+        <loc>https://umurgdk.dev/tags/xcode/</loc>
     </url>
 </urlset>

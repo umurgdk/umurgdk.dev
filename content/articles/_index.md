@@ -1,2 +1,3 @@
 +++
+template = "blog/index.html"
 +++

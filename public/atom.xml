@@ -4,8 +4,79 @@
     <link href="https://umurgdk.dev/atom.xml" rel="self" type="application/atom+xml"/>
     <link href="https://umurgdk.dev"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    <updated>2023-09-06T00:00:00+00:00</updated>
+    <updated>2023-09-11T00:00:00+00:00</updated>
     <id>https://umurgdk.dev/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Distribute macOS Applications as DMG Images</title>
+        <published>2023-09-11T00:00:00+00:00</published>
+        <updated>2023-09-11T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="https://umurgdk.dev/articles/distribute-macos-applications-as-dmg-images/" type="text/html"/>
+        <id>https://umurgdk.dev/articles/distribute-macos-applications-as-dmg-images/</id>
+        
+        <content type="html">&lt;p&gt;Distributing apps as  &lt;code&gt;.dmg&lt;&#x2F;code&gt; files requires the developer to sign the &lt;code&gt;.dmg&lt;&#x2F;code&gt; file with a Developer ID Application certificate and notarizing it.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;prerequirements&quot;&gt;Prerequirements&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;A provisioning profile and certificate with type  Developer ID Application
+&lt;ul&gt;
+&lt;li&gt;https:&#x2F;&#x2F;developer.apple.com &amp;gt; Account &amp;gt; Certificates, IDs &amp;amp; Profiles &amp;gt; Profiles&lt;&#x2F;li&gt;
+&lt;li&gt;Install the certificate in your Keychain (double clicking the certificate file will install)&lt;&#x2F;li&gt;
+&lt;li&gt;Make sure you use the correct provisioning profile to build your archive&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;archiving&quot;&gt;Archiving&lt;&#x2F;h2&gt;
+&lt;p&gt;Archive your application in Xcode by Product &amp;gt; Archive. When archive build is complete Xcode will open a window called &lt;strong&gt;Organizer&lt;&#x2F;strong&gt; (Xcode menu Window &amp;gt; Organizer) where you can sign and export your  &lt;code&gt;.app&lt;&#x2F;code&gt; file.&lt;&#x2F;p&gt;
+&lt;p&gt;Click  Distribute App and then select  Developer ID as your method of distribution. In the next screen select &lt;strong&gt;Export&lt;&#x2F;strong&gt; (sign without notarization) as your destination, we will notarize the &lt;code&gt;.dmg&lt;&#x2F;code&gt; file not the &lt;code&gt;.app&lt;&#x2F;code&gt; export.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;creating-dmg&quot;&gt;Creating DMG&lt;&#x2F;h2&gt;
+&lt;ol&gt;
+&lt;li&gt;You can use &lt;strong&gt;Disk Utilities&lt;&#x2F;strong&gt; app in your mac to create an empty  &lt;code&gt;.sparsebundle&lt;&#x2F;code&gt; disk image&lt;&#x2F;li&gt;
+&lt;li&gt;Mount the disk image (double-click) and open the volume (should be listed at Finder’s sidebar)&lt;&#x2F;li&gt;
+&lt;li&gt;Configure the display options of the finder like; show as icons, icon size, snap to grid, and background.&lt;&#x2F;li&gt;
+&lt;li&gt;Don’t forget to create a link to  &lt;code&gt;&#x2F;Applications&lt;&#x2F;code&gt; directory to easy drag n drop install&lt;&#x2F;li&gt;
+&lt;li&gt;Close the finder window when it looks good&lt;&#x2F;li&gt;
+&lt;li&gt;Get back to &lt;strong&gt;Disk Utility&lt;&#x2F;strong&gt; app and show select &lt;strong&gt;Show All Devices&lt;&#x2F;strong&gt; from the sidebar icon&lt;&#x2F;li&gt;
+&lt;li&gt;On the sidebar find the mounted sparsebundle image&lt;&#x2F;li&gt;
+&lt;li&gt;Right-Click and select create image on the  container and choose compressed and save as .dmg&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h2 id=&quot;signing-and-notarizing&quot;&gt;Signing and Notarizing&lt;&#x2F;h2&gt;
+&lt;p&gt;First we need to sign  &lt;code&gt;.dmg&lt;&#x2F;code&gt; file just like the  &lt;code&gt;.app&lt;&#x2F;code&gt;. These commands doesn’t produce any output when it is successfull.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;shell&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-shell &quot;&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;&lt;span&gt;# Sign the .dmg file with the certificate mentioned in the prerequirements section
+&lt;&#x2F;span&gt;&lt;span&gt;$ codesign --sign &amp;quot;Developer ID Application: &amp;lt;Your Name&amp;gt; (Team ID)&amp;quot; path&#x2F;to&#x2F;application.dmg
+&lt;&#x2F;span&gt;&lt;span&gt;$ codesign --verify path&#x2F;to&#x2F;application.dmg
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;To notarize the &lt;code&gt;.dmg&lt;&#x2F;code&gt; we need to run  notarytool. notary tool requires either AppStoreConnect API Key or an application specific password. As you may guessed API key can be obtained from App Store Connect page. Application specific password can be created at Apple ID.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;shell&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-shell &quot;&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;&lt;span&gt;# If you are using application specific password
+&lt;&#x2F;span&gt;&lt;span&gt;$ xcrun notarytool submit --wait --apple-id &amp;quot;&amp;lt;apple-id-email&amp;gt;&amp;quot; --password &amp;quot;&amp;lt;app-specific-password&amp;gt;&amp;quot; --team-id TEAM_ID MyApp.dmg
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;# If you are using API key
+&lt;&#x2F;span&gt;&lt;span&gt;$ xcrun notarytool submit --wait --key &amp;lt;path-to-key-file&amp;gt; --key-id &amp;lt;10 char key id&amp;gt; --issuer &amp;lt;issuer id UUID&amp;gt; MyApp.dmg
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; Successfully received submission info
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;   createdDate: 2023-09-11T19:38:24.532Z
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;   id: 4667a4a7-xxxx-xxxx-xxxx-d83eb3124f84
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;   name: MyApp.dmg
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;   status: Accepted
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;# If you don&amp;#39;t want to wait until the notarization complete ommit --wait parameter
+&lt;&#x2F;span&gt;&lt;span&gt;# In that case output will contain the submit ID you can use that ID to query
+&lt;&#x2F;span&gt;&lt;span&gt;# the status of the notarization
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;After the notarization is complete and status is &lt;strong&gt;Accepted&lt;&#x2F;strong&gt;, &lt;code&gt;.dmg&lt;&#x2F;code&gt; file needs to be stapled. Apple notarization process creates a ticket after a successful submit. To attach that ticket to our application (in this case our .dmg file):&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;shell&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-shell &quot;&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;&lt;span&gt;$ xcrun stapler staple MyApp.dmg
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;# To test signing &amp;amp; notarization is successful
+&lt;&#x2F;span&gt;&lt;span&gt;$ spctl -a -t open --context context:primary-signature -v MyApp.dmg
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; MyApp.dmg: accepted
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; source=Notarized Developer ID
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;If the output from  &lt;code&gt;spctl&lt;&#x2F;code&gt; command is different (as in rejected) you maybe skip a step, please make sure everything is done in order.&lt;&#x2F;p&gt;
+&lt;p&gt;Happy deployments!&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
     <entry xml:lang="en">
         <title>Hello Rust</title>
         <published>2023-09-06T00:00:00+00:00</published>
