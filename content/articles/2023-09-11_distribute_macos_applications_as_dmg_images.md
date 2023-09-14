@@ -1,6 +1,7 @@
 +++
 title = 'Distribute macOS Applications as DMG Images'
 description = 'Step by step guide to creating notarized .dmg files for macOS apps.'
+authors = ['Umur Gedik']
 taxonomies.tags = ['Xcode', 'Deployment', 'macOS', 'notarization']
 template = "blog/article.html"
 +++
