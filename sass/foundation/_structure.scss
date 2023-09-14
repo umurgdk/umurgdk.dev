@@ -80,6 +80,9 @@ section {
 @media (prefers-color-scheme: dark) {
     section h1 {
         text-shadow: 0 -1px 0 black;
+        strong {
+            color: #eee;
+        }
     }
 }
 

@@ -2,7 +2,28 @@
 
 {% import 'macros.html' as macros %}
 
-{% block title %}{% endblock title %}
+{% block title %}{{ page.title }} by {% endblock title %}
+
+{% block head %}
+<meta name="description" content="{{ page.description }}">
+<meta name="keyword" content="{% for tag in page.taxonomies['tags'] %}{{ tag }}{% if not loop.last %}, {% endif %}{% endfor %}">
+
+<meta property="og:title" content="{{ page.title }} by Umur Gedik"/>
+<meta property="og:description" content="{{ page.description }}" />
+<meta property="og:url" content="{{ config.base_url | safe }}{{ page.path | safe }}" />
+<meta property="og:type" content="article" />
+<meta property="og:image" content="{{ config.base_url | safe }}/bio/avatar@2x.jpg">
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@umurgdk" />
+<meta name="twitter:title" content="{{ page.title }} by Umur Gedik" />
+<meta name="twitter:description" content="{{ page.description }}"/>
+<meta name="twitter:image" content="{{ config.base_url | safe }}/bio/avatar@2x.jpg"/>
+
+<link rel="shortcut icon" href="/favicon.png" type="image/png" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed for umurgdk.dev" href="/atom.xml" />
+
+{% endblock head %}
 
 {% block content %}
     <div class="article-page">
