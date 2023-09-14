@@ -1,1 +1,10 @@
 {% extends "base.html" %}
+
+{% import 'macros.html' as macros %}
+
+{% block title %}{% endblock title %}
+
+{% block content %}
+    {% include 'header.html' %}
+    {% include 'articles.html' %}
+{% endblock %}

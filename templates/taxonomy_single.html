@@ -7,7 +7,7 @@
     {% include 'header.html' %}
 
     <section>
-        <h1><strong>{{ term.name | upper }}</strong></h1>
+        <h1><strong>#{{ term.name }}</strong> ARTICLES</h1>
         {{ macros::article_list(pages=term.pages) }}
     </section>
 {% endblock content %}

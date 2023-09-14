@@ -21,6 +21,7 @@
         background: #202122;
         width: 56px;
         height: 56px;
+        outline: 1px solid rgba($color: black, $alpha: 0.1);
     }
 
     & > span {
@@ -63,13 +64,24 @@
     }
 }
 
+img.article-icon {
+    background: hsla(0, 0, 0.5, 0.05);
+}
+
 
 @media (prefers-color-scheme: dark) {
+    .article-list {
+        border: 1px solid rgba($color: white, $alpha: 0.1);
+    }
     .article-list-item {
-        background-color: var(--gray800);
+        background-color: rgba($color: white, $alpha: 0.04);
 
         & > span {
             color: var(--gray500);
+        }
+
+        img {
+            outline-color: rgba($color: white, $alpha: 0.05);
         }
     }
 

@@ -19,13 +19,10 @@
         <content type="html">&lt;p&gt;Distributing apps as  &lt;code&gt;.dmg&lt;&#x2F;code&gt; files requires the developer to sign the &lt;code&gt;.dmg&lt;&#x2F;code&gt; file with a Developer ID Application certificate and notarizing it.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;prerequirements&quot;&gt;Prerequirements&lt;&#x2F;h2&gt;
 &lt;ul&gt;
-&lt;li&gt;A provisioning profile and certificate with type  Developer ID Application
-&lt;ul&gt;
+&lt;li&gt;A provisioning profile and certificate with type  Developer ID Application&lt;&#x2F;li&gt;
 &lt;li&gt;https:&#x2F;&#x2F;developer.apple.com &amp;gt; Account &amp;gt; Certificates, IDs &amp;amp; Profiles &amp;gt; Profiles&lt;&#x2F;li&gt;
 &lt;li&gt;Install the certificate in your Keychain (double clicking the certificate file will install)&lt;&#x2F;li&gt;
 &lt;li&gt;Make sure you use the correct provisioning profile to build your archive&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
-&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
 &lt;h2 id=&quot;archiving&quot;&gt;Archiving&lt;&#x2F;h2&gt;
 &lt;p&gt;Archive your application in Xcode by Product &amp;gt; Archive. When archive build is complete Xcode will open a window called &lt;strong&gt;Organizer&lt;&#x2F;strong&gt; (Xcode menu Window &amp;gt; Organizer) where you can sign and export your  &lt;code&gt;.app&lt;&#x2F;code&gt; file.&lt;&#x2F;p&gt;
@@ -43,12 +40,12 @@
 &lt;&#x2F;ol&gt;
 &lt;h2 id=&quot;signing-and-notarizing&quot;&gt;Signing and Notarizing&lt;&#x2F;h2&gt;
 &lt;p&gt;First we need to sign  &lt;code&gt;.dmg&lt;&#x2F;code&gt; file just like the  &lt;code&gt;.app&lt;&#x2F;code&gt;. These commands doesn’t produce any output when it is successfull.&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;shell&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-shell &quot;&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;&lt;span&gt;# Sign the .dmg file with the certificate mentioned in the prerequirements section
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;# Sign the .dmg file with the certificate mentioned in the prerequirements section
 &lt;&#x2F;span&gt;&lt;span&gt;$ codesign --sign &amp;quot;Developer ID Application: &amp;lt;Your Name&amp;gt; (Team ID)&amp;quot; path&#x2F;to&#x2F;application.dmg
 &lt;&#x2F;span&gt;&lt;span&gt;$ codesign --verify path&#x2F;to&#x2F;application.dmg
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;To notarize the &lt;code&gt;.dmg&lt;&#x2F;code&gt; we need to run  notarytool. notary tool requires either AppStoreConnect API Key or an application specific password. As you may guessed API key can be obtained from App Store Connect page. Application specific password can be created at Apple ID.&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;shell&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-shell &quot;&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;&lt;span&gt;# If you are using application specific password
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;# If you are using application specific password
 &lt;&#x2F;span&gt;&lt;span&gt;$ xcrun notarytool submit --wait --apple-id &amp;quot;&amp;lt;apple-id-email&amp;gt;&amp;quot; --password &amp;quot;&amp;lt;app-specific-password&amp;gt;&amp;quot; --team-id TEAM_ID MyApp.dmg
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;# If you are using API key
@@ -64,7 +61,7 @@
 &lt;&#x2F;span&gt;&lt;span&gt;# the status of the notarization
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;After the notarization is complete and status is &lt;strong&gt;Accepted&lt;&#x2F;strong&gt;, &lt;code&gt;.dmg&lt;&#x2F;code&gt; file needs to be stapled. Apple notarization process creates a ticket after a successful submit. To attach that ticket to our application (in this case our .dmg file):&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;shell&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-shell &quot;&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;&lt;span&gt;$ xcrun stapler staple MyApp.dmg
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;$ xcrun stapler staple MyApp.dmg
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;# To test signing &amp;amp; notarization is successful
 &lt;&#x2F;span&gt;&lt;span&gt;$ spctl -a -t open --context context:primary-signature -v MyApp.dmg
@@ -74,20 +71,6 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;If the output from  &lt;code&gt;spctl&lt;&#x2F;code&gt; command is different (as in rejected) you maybe skip a step, please make sure everything is done in order.&lt;&#x2F;p&gt;
 &lt;p&gt;Happy deployments!&lt;&#x2F;p&gt;
-</content>
-        
-    </entry>
-    <entry xml:lang="en">
-        <title>Hello Rust</title>
-        <published>2023-09-06T00:00:00+00:00</published>
-        <updated>2023-09-06T00:00:00+00:00</updated>
-        <author>
-          <name>Unknown</name>
-        </author>
-        <link rel="alternate" href="https://umurgdk.dev/articles/hello-rust/" type="text/html"/>
-        <id>https://umurgdk.dev/articles/hello-rust/</id>
-        
-        <content type="html">&lt;h1 id=&quot;hello-rust&quot;&gt;Hello Rust&lt;&#x2F;h1&gt;
 </content>
         
     </entry>

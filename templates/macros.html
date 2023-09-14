@@ -3,10 +3,14 @@
     {% for post in pages %}
     <div class="article-list-item">
         <a href="{{ post.permalink | safe }}">
+            {% if post.extra.thumbnails %}
             <img srcset="
             {% for size, file in post.extra.thumbnails %}
             {{ post.path | safe }}{{file | safe}} {{size}}{% if not loop.last %}, {% endif %}
             {% endfor %}" alt="">
+            {% else %}
+            <img class="article-icon" src="/icons/article.svg" aria-hidden="true">
+            {% endif %}
         </a>
         <div class="article-list-item-info">
             <a href="{{ post.permalink | safe }}" class="article-list-item-title">{{ post.title }}</a>

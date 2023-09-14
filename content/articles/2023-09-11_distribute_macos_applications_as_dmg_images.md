@@ -2,9 +2,7 @@
 title = 'Distribute macOS Applications as DMG Images'
 description = 'Step by step guide to creating notarized .dmg files for macOS apps.'
 taxonomies.tags = ['Xcode', 'Deployment', 'macOS', 'notarization']
-extra.thumbnails.1x = "thumbnail.png"
-extra.thumbnails.2x = "thumbnail@2x.png"
-extra.thumbnails.3x = "thumbnail@3x.png"
+template = "blog/article.html"
 +++
 
 Distributing apps as  `.dmg` files requires the developer to sign the `.dmg` file with a Developer ID Application certificate and notarizing it.
@@ -12,9 +10,9 @@ Distributing apps as  `.dmg` files requires the developer to sign the `.dmg` fil
 ## Prerequirements
 
 - A provisioning profile and certificate with type  Developer ID Application
-  - https://developer.apple.com > Account > Certificates, IDs & Profiles > Profiles
-  - Install the certificate in your Keychain (double clicking the certificate file will install)
-  - Make sure you use the correct provisioning profile to build your archive
+- https://developer.apple.com > Account > Certificates, IDs & Profiles > Profiles
+- Install the certificate in your Keychain (double clicking the certificate file will install)
+- Make sure you use the correct provisioning profile to build your archive
 
 ## Archiving
 
@@ -37,7 +35,7 @@ Click  Distribute App and then select  Developer ID as your method of distributi
 
 First we need to sign  `.dmg` file just like the  `.app`. These commands doesn't produce any output when it is successfull.
 
-```shell
+```
 # Sign the .dmg file with the certificate mentioned in the prerequirements section
 $ codesign --sign "Developer ID Application: <Your Name> (Team ID)" path/to/application.dmg
 $ codesign --verify path/to/application.dmg
@@ -45,7 +43,7 @@ $ codesign --verify path/to/application.dmg
 
 To notarize the `.dmg` we need to run  notarytool. notary tool requires either AppStoreConnect API Key or an application specific password. As you may guessed API key can be obtained from App Store Connect page. Application specific password can be created at Apple ID.
 
-```shell
+```
 # If you are using application specific password
 $ xcrun notarytool submit --wait --apple-id "<apple-id-email>" --password "<app-specific-password>" --team-id TEAM_ID MyApp.dmg
 
@@ -64,7 +62,7 @@ $ xcrun notarytool submit --wait --key <path-to-key-file> --key-id <10 char key 
 
 After the notarization is complete and status is **Accepted**, `.dmg` file needs to be stapled. Apple notarization process creates a ticket after a successful submit. To attach that ticket to our application (in this case our .dmg file):
 
-```shell
+```
 $ xcrun stapler staple MyApp.dmg
 
 # To test signing & notarization is successful

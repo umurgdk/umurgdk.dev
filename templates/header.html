@@ -8,13 +8,14 @@
     </div>
     <div class="title-bar">
         <div class="site-name">
-            <a href="#" class="site-title">Umur Gedik</a>
+            <a href="{{ config.base_url }}" class="site-title">Umur Gedik</a>
             <p class="site-subtitle">Software Developer & Designer</p>
         </div>
 
         {# <input type="search" placeholder="Search..." name="searc" id="search" /> #}
     </div>
 
+    {% if not no_bio %}
     <div class="bio">
         <div class="avatar mobile-hidden">
             {{ macros::imgset(root=bio.path, name="avatar", image=bio.extra.avatar, width=180+16, height=180+16, alt="avatar") }}
@@ -31,4 +32,5 @@
             {{ bio.content | safe }}
         </div>
     </div>
+    {% endif %}
 </header>

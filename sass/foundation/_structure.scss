@@ -22,10 +22,11 @@ section {
     padding-top: var(--section-padding);
 
     h1 {
-        color: var(--gray500);
+        color: var(--gray400);
         font-size: 16px;
-        font-weight: 600;
+        font-weight: bold;
         padding: 0 var(--content-padding);
+        text-shadow: 0 1px 0 white;
 
         strong {
             color: var(--title-color);
@@ -74,6 +75,12 @@ section {
 
 .content-padding-r {
     padding-right: var(--content-padding);
+}
+
+@media (prefers-color-scheme: dark) {
+    section h1 {
+        text-shadow: 0 -1px 0 black;
+    }
 }
 
 @media (breakpoints.$mobile) {
