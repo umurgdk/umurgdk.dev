@@ -1,8 +1,8 @@
 {% macro article_list(pages) %}
 <div class="article-list">
     {% for post in pages %}
-    <div class="article-list-item">
-        <a href="{{ post.permalink | safe }}">
+    <div class="article-list-item {% if not loop.last %}item-separator{% endif %}">
+        <a href="{{ post.permalink | safe }}" class="{% if not post.extra.thumbnails %}mobile-hidden{% endif %}">
             {% if post.extra.thumbnails %}
             <img srcset="
             {% for size, file in post.extra.thumbnails %}

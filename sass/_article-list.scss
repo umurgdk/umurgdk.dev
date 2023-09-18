@@ -1,3 +1,4 @@
+@use 'foundation/breakpoints';
 
 .article-list {
     margin: 40px calc(var(--content-padding) - 13px);
@@ -95,5 +96,42 @@ img.article-icon {
 
     .article-list-item-tags {
         a { color: var(--gray500); }
+    }
+}
+
+@media (breakpoints.$mobile) {
+    .article-list {
+        border: 0;
+        box-shadow: none;
+        margin: 0;
+        padding: var(--section-padding) calc(var(--content-padding) / 2);
+    }
+
+    .article-list-item {
+        flex-direction: column;
+        height: auto;
+        gap: 6px;
+        margin-bottom: calc(var(--content-padding)/2);
+        background: none;
+        border-radius: 16px;
+        padding: calc(var(--content-padding)/2);
+
+        span {
+            text-align: start;
+            order: 1;
+        }
+
+        & > div {
+            order: 2;
+            gap: 8px;
+
+            & > a:first-child {
+                font-size: 18px;
+            }
+
+            & > a:nth-child(2) {
+                font-size: 15px;
+            }
+        }
     }
 }
