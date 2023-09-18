@@ -1,3 +1,5 @@
+@use 'foundation/breakpoints';
+
 .article-page {
     --padding: calc(var(--content-padding));
     header {
@@ -87,6 +89,40 @@
 
 pre {
     color: rgba($color: #000000, $alpha: 0.8) !important;
+}
+
+@media (breakpoints.$mobile) {
+    .article-page {
+        --padding: 24px;
+        article {
+            .meta {
+                gap: 0px;
+                flex-direction: column;
+
+                .tags {
+                    flex-wrap: wrap;
+                }
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                padding: 0 var(--padding);
+                margin-bottom: var(--padding);
+                padding-top: calc(var(--padding)/3);
+            }
+
+            & > h1 {
+                line-height: normal;
+                margin-top: 8px;
+            }
+
+            pre {
+                padding-top: 32px;
+                padding-bottom: 32px;
+                margin-top: 32px;
+                margin-bottom: 32px;
+            }
+        }
+    }
 }
 
 @media (prefers-color-scheme: dark) {
