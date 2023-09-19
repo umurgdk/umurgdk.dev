@@ -23,14 +23,14 @@ Click  Distribute App and then select  Developer ID as your method of distributi
 
 ## Creating DMG
 
-1.  You can use **Disk Utilities** app in your mac to create an empty  `.sparsebundle` disk image
-2.  Mount the disk image (double-click) and open the volume (should be listed at Finder’s sidebar)
-3.  Configure the display options of the finder like; show as icons, icon size, snap to grid, and background.
-4.  Don’t forget to create a link to  `/Applications` directory to easy drag n drop install
-5.  Close the finder window when it looks good
-6.  Get back to **Disk Utility** app and show select **Show All Devices** from the sidebar icon
-7.  On the sidebar find the mounted sparsebundle image
-8.  Right-Click and select create image on the  container and choose compressed and save as .dmg
+1. You can use **Disk Utilities** app in your mac to create an empty  `.sparsebundle` disk image
+2. Mount the disk image (double-click) and open the volume (should be listed at Finder’s sidebar)
+3. Configure the display options of the finder like; show as icons, icon size, snap to grid, and background.
+4. Don’t forget to create a link to  `/Applications` directory to easy drag n drop install
+5. Close the finder window when it looks good
+6. Get back to **Disk Utility** app and show select **Show All Devices** from the sidebar icon
+7. On the sidebar find the mounted sparsebundle image
+8. Right-Click and select create image on the  container and choose compressed and save as .dmg
 
 ## Signing and Notarizing
 
