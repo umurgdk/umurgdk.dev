@@ -51,14 +51,14 @@ struct MultipartFormData {
         fieldString += "Content-Disposition: form-data; name=\"\(field)\"\r\n"
         fieldString += "Content-Type: text/plain; charset=utf-8\r\n"
         fieldString += "\r\n"
-        fieldString += "\(string)\r\n"
+        fieldString += "\(value)\r\n"
 
         data.append(fieldString.data(using: .utf8)!)
     }
 
     mutating func makeBody() -> Data {
         let terminator = "--\(boundary)--"
-        data.append(terminator.data(encoding: .utf8)!)
+        data.append(terminator.data(using: .utf8)!)
         return data
     }
 }
@@ -104,7 +104,7 @@ Implementation in our `MultipartFormData` should append the given `Data` as it i
 
 struct MultipartFormData {
     // ...
-    mutating func addFile(named name: String, data fileData: String, mimeType: String, forField field: String) {
+    mutating func addFile(named name: String, data fileData: Data, mimeType: String, forField field: String) {
         var fieldString = "--\(boundary)\r\n"
 
         // Here we add filename as well
@@ -161,19 +161,19 @@ struct MultipartFormData {
 
     mutating func addString(_ value: String, forField field: String) {
         var fieldString = "--\(boundary)\r\n"
-        fieldString += "Content-Disposition: form-data; name=\"\(key)\"\r\n"
+        fieldString += "Content-Disposition: form-data; name=\"\(field)\"\r\n"
         fieldString += "Content-Type: text/plain; charset=utf-8\r\n"
         fieldString += "\r\n"
-        fieldString += "\(string)\r\n"
+        fieldString += "\(value)\r\n"
 
         data.append(fieldString.data(using: .utf8)!)
     }
 
-    mutating func addFile(named name: String, data fileData: String, mimeType: String, forField field: String) {
+    mutating func addFile(named name: String, data fileData: Data, mimeType: String, forField field: String) {
         var fieldString = "--\(boundary)\r\n"
 
         // Here we add filename as well
-        fieldString += "Content-Disposition: form-data; name=\"\(key)\"; filename="\(name)"\r\n"
+        fieldString += "Content-Disposition: form-data; name=\"\(field)\"; filename=\"\(name)\"\r\n"
         fieldString += "Content-Type: \(mimeType)\r\n"
         fieldString += "\r\n"
 
@@ -186,7 +186,7 @@ struct MultipartFormData {
 
     mutating func makeBody() -> Data {
         let terminator = "--\(boundary)--"
-        data.append(terminator.data(encoding: .utf8)!)
+        data.append(terminator.data(using: .utf8)!)
         return data
     }
 }

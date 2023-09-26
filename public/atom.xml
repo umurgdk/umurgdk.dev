@@ -52,14 +52,14 @@
 &lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Disposition: form-data; name=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(field)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Type: text&#x2F;plain; charset=utf-8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(string)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(value)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;        data.append(fieldString.data(using: .utf8)!)
 &lt;&#x2F;span&gt;&lt;span&gt;    }
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;makeBody() -&amp;gt; Data {
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; terminator = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;--&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;--&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;        data.append(terminator.data(encoding: .utf8)!)
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(terminator.data(using: .utf8)!)
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; data
 &lt;&#x2F;span&gt;&lt;span&gt;    }
 &lt;&#x2F;span&gt;&lt;span&gt;}
@@ -96,7 +96,7 @@
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; MultipartFormData {
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;addFile(named name: String, data fileData: String, mimeType: String, forField field: String) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;addFile(named name: String, data fileData: Data, mimeType: String, forField field: String) {
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var&lt;&#x2F;span&gt;&lt;span&gt; fieldString = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;--&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Here we add filename as well
@@ -147,19 +147,19 @@
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;addString(_ value: String, forField field: String) {
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var&lt;&#x2F;span&gt;&lt;span&gt; fieldString = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;--&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Disposition: form-data; name=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(key)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Disposition: form-data; name=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(field)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Type: text&#x2F;plain; charset=utf-8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(string)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(value)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;        data.append(fieldString.data(using: .utf8)!)
 &lt;&#x2F;span&gt;&lt;span&gt;    }
 &lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;addFile(named name: String, data fileData: String, mimeType: String, forField field: String) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;addFile(named name: String, data fileData: Data, mimeType: String, forField field: String) {
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var&lt;&#x2F;span&gt;&lt;span&gt; fieldString = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;--&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Here we add filename as well
-&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Disposition: form-data; name=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(key)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;; filename=&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(name)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Disposition: form-data; name=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(field)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;; filename=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(name)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Type: &lt;&#x2F;span&gt;&lt;span&gt;\(mimeType)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;
@@ -172,7 +172,7 @@
 &lt;&#x2F;span&gt;&lt;span&gt;
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;makeBody() -&amp;gt; Data {
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; terminator = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;--&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;--&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;        data.append(terminator.data(encoding: .utf8)!)
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(terminator.data(using: .utf8)!)
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; data
 &lt;&#x2F;span&gt;&lt;span&gt;    }
 &lt;&#x2F;span&gt;&lt;span&gt;}
