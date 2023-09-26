@@ -111,7 +111,7 @@
 </span><span>
 </span><span>    </span><span style="color:#b48ead;">mutating func </span><span>addString(_ value: String, forField field: String) {
 </span><span>        </span><span style="color:#b48ead;">var</span><span> fieldString = </span><span style="color:#a3be8c;">&quot;--</span><span>\(boundary)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
-</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Disposition: form-data; name=</span><span style="color:#96b5b4;">\&quot;</span><span>\(key)</span><span style="color:#96b5b4;">\&quot;\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Disposition: form-data; name=</span><span style="color:#96b5b4;">\&quot;</span><span>\(field)</span><span style="color:#96b5b4;">\&quot;\r\n</span><span style="color:#a3be8c;">&quot;
 </span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Type: text/plain; charset=utf-8</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
 </span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
 </span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;</span><span>\(string)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
@@ -162,7 +162,7 @@
 </span><span>        </span><span style="color:#b48ead;">var</span><span> fieldString = </span><span style="color:#a3be8c;">&quot;--</span><span>\(boundary)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
 </span><span>
 </span><span>        </span><span style="color:#65737e;">// Here we add filename as well
-</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Disposition: form-data; name=</span><span style="color:#96b5b4;">\&quot;</span><span>\(key)</span><span style="color:#96b5b4;">\&quot;</span><span style="color:#a3be8c;">; filename=&quot;</span><span>\(name)</span><span style="color:#a3be8c;">&quot;</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Disposition: form-data; name=</span><span style="color:#96b5b4;">\&quot;</span><span>\(field)</span><span style="color:#96b5b4;">\&quot;</span><span style="color:#a3be8c;">; filename=</span><span style="color:#96b5b4;">\&quot;</span><span>\(name)</span><span style="color:#96b5b4;">\&quot;\r\n</span><span style="color:#a3be8c;">&quot;
 </span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Type: </span><span>\(mimeType)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
 </span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
 </span><span>

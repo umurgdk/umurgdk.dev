@@ -48,7 +48,7 @@ struct MultipartFormData {
 
     mutating func addString(_ value: String, forField field: String) {
         var fieldString = "--\(boundary)\r\n"
-        fieldString += "Content-Disposition: form-data; name=\"\(key)\"\r\n"
+        fieldString += "Content-Disposition: form-data; name=\"\(field)\"\r\n"
         fieldString += "Content-Type: text/plain; charset=utf-8\r\n"
         fieldString += "\r\n"
         fieldString += "\(string)\r\n"
@@ -108,7 +108,7 @@ struct MultipartFormData {
         var fieldString = "--\(boundary)\r\n"
 
         // Here we add filename as well
-        fieldString += "Content-Disposition: form-data; name=\"\(key)\"; filename="\(name)"\r\n"
+        fieldString += "Content-Disposition: form-data; name=\"\(field)\"; filename=\"\(name)\"\r\n"
         fieldString += "Content-Type: \(mimeType)\r\n"
         fieldString += "\r\n"
 
