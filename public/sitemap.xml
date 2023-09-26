@@ -20,6 +20,10 @@
         <lastmod>2023-09-11</lastmod>
     </url>
     <url>
+        <loc>https://umurgdk.dev/articles/uploading-files-with-urlsession/</loc>
+        <lastmod>2023-09-26</lastmod>
+    </url>
+    <url>
         <loc>https://umurgdk.dev/bio/</loc>
     </url>
     <url>
@@ -44,13 +48,28 @@
         <loc>https://umurgdk.dev/tags/</loc>
     </url>
     <url>
+        <loc>https://umurgdk.dev/tags/alamofire/</loc>
+    </url>
+    <url>
         <loc>https://umurgdk.dev/tags/deployment/</loc>
+    </url>
+    <url>
+        <loc>https://umurgdk.dev/tags/file-upload/</loc>
     </url>
     <url>
         <loc>https://umurgdk.dev/tags/macos/</loc>
     </url>
     <url>
+        <loc>https://umurgdk.dev/tags/multipart-form-data/</loc>
+    </url>
+    <url>
         <loc>https://umurgdk.dev/tags/notarization/</loc>
+    </url>
+    <url>
+        <loc>https://umurgdk.dev/tags/swift/</loc>
+    </url>
+    <url>
+        <loc>https://umurgdk.dev/tags/urlsession/</loc>
     </url>
     <url>
         <loc>https://umurgdk.dev/tags/xcode/</loc>

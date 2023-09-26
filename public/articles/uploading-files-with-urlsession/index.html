@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploading files with URLSession using multipart requests by Umur Gedik</title>
+    <link rel="stylesheet" href="/main.css">
+
+    
+<meta name="description" content="How to encode multipart&#x2F;form-data with swift to upload files alongside with other parameters">
+<meta name="keyword" content="Swift, URLSession, multipart&#x2F;form-data, file upload, Alamofire">
+
+<meta property="og:title" content="Uploading files with URLSession using multipart requests by Umur Gedik"/>
+<meta property="og:description" content="How to encode multipart&#x2F;form-data with swift to upload files alongside with other parameters" />
+<meta property="og:url" content="https://umurgdk.dev/articles/uploading-files-with-urlsession/" />
+<meta property="og:type" content="article" />
+<meta property="og:image" content="https://umurgdk.dev/bio/avatar@2x.jpg">
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@umurgdk" />
+<meta name="twitter:title" content="Uploading files with URLSession using multipart requests by Umur Gedik" />
+<meta name="twitter:description" content="How to encode multipart&#x2F;form-data with swift to upload files alongside with other parameters"/>
+<meta name="twitter:image" content="https://umurgdk.dev/bio/avatar@2x.jpg"/>
+
+<link rel="shortcut icon" href="/favicon.png" type="image/png" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed for umurgdk.dev" href="/atom.xml" />
+
+
+</head>
+<body>
+    <div id="content-wrapper">
+        
+    <div class="article-page">
+    
+    
+
+<header class="section-highlight section-separator">
+    <div class="avatar mobile-only">
+        
+    <picture>
+        
+            <source srcset="/bio/avatar@1x.jpg 1x, /bio/avatar@2x.jpg 2x, /bio/avatar@3x.jpg 3x, " type="image/jpg">
+        
+            <source srcset="/bio/avatar@1x.webp 1x, /bio/avatar@2x.webp 2x, /bio/avatar@3x.webp 3x, " type="image/webp">
+        
+        <img src="/bio/avatar@1x.jpg" alt="avatar">
+    </picture>
+
+    </div>
+    <div class="title-bar">
+        <div class="site-name">
+            <a href="https:&#x2F;&#x2F;umurgdk.dev" class="site-title">Umur Gedik</a>
+            <p class="site-subtitle">Software Developer & Designer</p>
+        </div>
+
+        
+    </div>
+
+    
+</header>
+
+
+    <article>
+        <div class="meta">
+            <span class="date">26 Sep 2023</span>
+            <div class="tags">
+                
+                <a href="https://umurgdk.dev/tags/swift/" class="tag">#Swift</a>
+                
+                <a href="https://umurgdk.dev/tags/urlsession/" class="tag">#URLSession</a>
+                
+                <a href="https://umurgdk.dev/tags/multipart-form-data/" class="tag">#multipart&#x2F;form-data</a>
+                
+                <a href="https://umurgdk.dev/tags/file-upload/" class="tag">#file upload</a>
+                
+                <a href="https://umurgdk.dev/tags/alamofire/" class="tag">#Alamofire</a>
+                
+            </div>
+        </div>
+        <h1>Uploading files with URLSession using multipart requests</h1>
+        <p>While working on my macOS Mastodon client Fil, I needed to upload media files to post statuses with images and videos attached. Mastodon API allows file uploads with <code>multipart/form-data</code> encoded http request body. If you ever develop web applications with forms in it, this is what basically browsers do that when you have files in your forms by default. Encoding is pretty straight forward and a simple implementation in swift doesn’t takes more than 30 lines of code. So instead of including Alamofire in your next project just to support file uploads, you can write it yourself or copy paste the one I share in this post.</p>
+<p>Multipart/form-data requests consist of a magic <strong>boundary</strong> value and list of values (form fields) separated by that boundary in the body of the request. Boundary acts as a field separator, so that the server can understand where each field begins and ends. This is espacially important since these types of requests usually embeds binary data in the body of the request, so that simple new line characters like <code>\r\n</code> may not be sufficient.</p>
+<p>A simple request representing two <code>String</code> fields (<code>title</code> and <code>description</code>) may look like this:</p>
+<pre data-lang="http" style="background-color:#2b303b;color:#c0c5ce;" class="language-http "><code class="language-http" data-lang="http"><span>POST /upload/image HTTP/1.1
+</span><span>Host: api.example.com
+</span><span>Content-Type: multipart/form-data; charset=utf-8; boundary=__MY_MAGIC_IDENTIFIER__
+</span><span>
+</span><span>--__MY_MAGIC_IDENTIFIER
+</span><span>Content-Disposition: form-data; name=&quot;title&quot;
+</span><span>
+</span><span>My blog title
+</span><span>--__MY_MAGIC_IDENTIFIER
+</span><span>Content-Disposition: form-data; name=&quot;description&quot;
+</span><span>
+</span><span>Some description about my blog
+</span><span>--__MY_MAGIC_IDENTIFIER--
+</span></code></pre>
+<p>In this example <code>Content-Type</code> is set to <code>multipart/form-data</code> with utf8 encoding and the boundary is defined as <code>__MY_MAGIC_IDENTIFIER__</code>, but you can choose your own identifier. In my app this is set to <code>__X_FIL_MULTIPART_BOUNDARY__</code>. Also the underscores are optional and stylistic in these examples.</p>
+<p>Actual <code>httpBody</code> of the <code>URLRequest</code> starts just after the empty line after the headers. In this example the body starts with the <strong>boundary separator</strong>. Boundary separators are the magic boundary identifier prefixed with 2 dashes “<code>--</code>”. After the separator, we should define which field of the form data we are going to include with <code>Content-Disposition</code> attribute. It’s format self explanatory, and arguments (just like headers) are separated with “<code>;</code>” character. For string encoded fields this definition is sufficient, but for file fields, file name can be defined with <code>filename=&quot;myfile.jpg&quot;</code> argument.</p>
+<p>After all the form fields <code>httpBody</code> should include a terminator to indicate there are no more data is provided. Terminator is the magic boundary identifier surrounded with 2 dashes “<code>--</code>” on both sides; like “<code>--__MY_MAGIC_IDENTIFIER__--</code>”. Make sure this terminator is only included at the end of the body, and do not put “<code>--</code>” at the end of the <strong>field separators</strong>.</p>
+<p>We can create a swift struct to abstract these details from our networking code. To start with supporting string fields:</p>
+<pre data-lang="swift" style="background-color:#2b303b;color:#c0c5ce;" class="language-swift "><code class="language-swift" data-lang="swift"><span style="color:#65737e;">// MultipartFormData.swift
+</span><span>
+</span><span style="color:#b48ead;">struct</span><span> MultipartFormData {
+</span><span>    </span><span style="color:#b48ead;">public let</span><span> boundary = </span><span style="color:#a3be8c;">&quot;__MY_MAGIC_IDENTIFIER__&quot;
+</span><span>    </span><span style="color:#b48ead;">private var</span><span> data = Data()
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">public var</span><span> contentType: String {
+</span><span>        </span><span style="color:#a3be8c;">&quot;multipart/form-data; charset=utf-8; boundary=</span><span>\(boundary)</span><span style="color:#a3be8c;">&quot;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">mutating func </span><span>addString(_ value: String, forField field: String) {
+</span><span>        </span><span style="color:#b48ead;">var</span><span> fieldString = </span><span style="color:#a3be8c;">&quot;--</span><span>\(boundary)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Disposition: form-data; name=</span><span style="color:#96b5b4;">\&quot;</span><span>\(key)</span><span style="color:#96b5b4;">\&quot;\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Type: text/plain; charset=utf-8</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;</span><span>\(string)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>
+</span><span>        data.append(fieldString.data(using: .utf8)!)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">mutating func </span><span>makeBody() -&gt; Data {
+</span><span>        </span><span style="color:#b48ead;">let</span><span> terminator = </span><span style="color:#a3be8c;">&quot;--</span><span>\(boundary)</span><span style="color:#a3be8c;">--&quot;
+</span><span>        data.append(terminator.data(encoding: .utf8)!)
+</span><span>        </span><span style="color:#b48ead;">return</span><span> data
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>As you may notice, instead of “<code>\n</code>” HTTP use “<code>\r\n</code>” for empty lines. Every field immediately starts with the <strong>boundary separator</strong> end ends with an empty line. And the <strong>terminator</strong> in the <code>makeBody</code> method does not includes an empty line at the end. We can use this helper with <code>URLSession</code> as:</p>
+<pre data-lang="swift" style="background-color:#2b303b;color:#c0c5ce;" class="language-swift "><code class="language-swift" data-lang="swift"><span style="color:#b48ead;">var</span><span> formData = MultipartFormData()
+</span><span>formData.addString(</span><span style="color:#a3be8c;">&quot;Umur Gedik&quot;</span><span>, forField: </span><span style="color:#a3be8c;">&quot;name&quot;</span><span>)
+</span><span>formData.addString(</span><span style="color:#a3be8c;">&quot;Turkey&quot;</span><span>, forField: </span><span style="color:#a3be8c;">&quot;location&quot;</span><span>)
+</span><span>
+</span><span style="color:#b48ead;">var</span><span> req = URLRequest(url: myApiUrl)
+</span><span>req.setValue(formData.contentType, forHTTPHeaderField: </span><span style="color:#a3be8c;">&quot;Content-Type&quot;</span><span>)
+</span><span>req.httpBody = formData.makeBody()
+</span><span>
+</span><span style="color:#b48ead;">let</span><span> (data, response) = </span><span style="color:#b48ead;">try</span><span> await URLSession.shared.data(</span><span style="color:#b48ead;">for</span><span>: req)
+</span></code></pre>
+<p>Adding support for file uploads are not that difficult. It requires an additional <code>Content-Type</code> attribute for the file field to let the server know what kind of file data we are sending. An example HTTP request including a file looks like this:</p>
+<pre data-lang="http" style="background-color:#2b303b;color:#c0c5ce;" class="language-http "><code class="language-http" data-lang="http"><span>POST /upload/image HTTP/1.1
+</span><span>Host: api.example.com
+</span><span>Content-Type: multipart/form-data; charset=utf-8; boundary=__MY_MAGIC_IDENTIFIER__
+</span><span>
+</span><span>--__MY_MAGIC_IDENTIFIER
+</span><span>Content-Disposition: form-data; name=&quot;name&quot;
+</span><span>
+</span><span>Umur Gedik
+</span><span>--__MY_MAGIC_IDENTIFIER
+</span><span>Content-Disposition: form-data; name=&quot;avatar&quot;; filename=&quot;avatar.jpg&quot;
+</span><span>Content-Type: image/jpeg
+</span><span>
+</span><span>&lt;BINARY JPEG DATA IS NOT SHOWN HERE&gt;
+</span><span>--__MY_MAGIC_IDENTIFIER--
+</span></code></pre>
+<p>Implementation in our <code>MultipartFormData</code> should append the given <code>Data</code> as it is to the body after the separator and the <code>Content-Disposition</code> like:</p>
+<pre data-lang="swift" style="background-color:#2b303b;color:#c0c5ce;" class="language-swift "><code class="language-swift" data-lang="swift"><span style="color:#65737e;">// MultipartFormData.swift
+</span><span>
+</span><span style="color:#b48ead;">struct</span><span> MultipartFormData {
+</span><span>    </span><span style="color:#65737e;">// ...
+</span><span>    </span><span style="color:#b48ead;">mutating func </span><span>addFile(named name: String, data fileData: String, mimeType: String, forField field: String) {
+</span><span>        </span><span style="color:#b48ead;">var</span><span> fieldString = </span><span style="color:#a3be8c;">&quot;--</span><span>\(boundary)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>
+</span><span>        </span><span style="color:#65737e;">// Here we add filename as well
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Disposition: form-data; name=</span><span style="color:#96b5b4;">\&quot;</span><span>\(key)</span><span style="color:#96b5b4;">\&quot;</span><span style="color:#a3be8c;">; filename=&quot;</span><span>\(name)</span><span style="color:#a3be8c;">&quot;</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Type: </span><span>\(mimeType)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>
+</span><span>        data.append(fieldString.data(using: .utf8)!)
+</span><span>
+</span><span>        </span><span style="color:#65737e;">// we append the given file data as it is immediately after the details
+</span><span>        data.append(fileData)
+</span><span>        data.append(</span><span style="color:#a3be8c;">&quot;</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;</span><span>.data(using: .utf8)!)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// ...
+</span><span>}
+</span></code></pre>
+<p><code>addFile</code> method introduces <code>filename</code> and <code>mimeType</code> to inform the server about the details of our file to upload. <code>mimeType</code> can be found by <code>UTType</code> in <code>UniformTypeIdentifiers</code> module. Example usage may look like this:</p>
+<pre data-lang="swift" style="background-color:#2b303b;color:#c0c5ce;" class="language-swift "><code class="language-swift" data-lang="swift"><span style="color:#b48ead;">import </span><span>UniformTypeIdentifiers
+</span><span>
+</span><span style="color:#b48ead;">var</span><span> formData = MultipartFormData()
+</span><span>formData.addString(</span><span style="color:#a3be8c;">&quot;Umur Gedik&quot;</span><span>, forField: </span><span style="color:#a3be8c;">&quot;name&quot;</span><span>)
+</span><span>formData.addString(</span><span style="color:#a3be8c;">&quot;Turkey&quot;</span><span>, forField: </span><span style="color:#a3be8c;">&quot;location&quot;</span><span>)
+</span><span>
+</span><span style="color:#65737e;">// assuming we have a file URL
+</span><span style="color:#b48ead;">let</span><span> data = </span><span style="color:#b48ead;">try</span><span> Data(contentsOf: fileURL)
+</span><span style="color:#b48ead;">let</span><span> typeIdentifier = UTType(filenameExtension: url.pathExtension)
+</span><span style="color:#b48ead;">let</span><span> mimeType = typeIdentifier.preferredMIMEType
+</span><span>
+</span><span>formData.addFile(named: fileURL.lastPathComponent, data: data, mimeType: mimeType, forField: </span><span style="color:#a3be8c;">&quot;avatar&quot;</span><span>)
+</span><span>
+</span><span style="color:#b48ead;">var</span><span> req = URLRequest(url: myApiUrl)
+</span><span>req.setValue(formData.contentType, forHTTPHeaderField: </span><span style="color:#a3be8c;">&quot;Content-Type&quot;</span><span>)
+</span><span>req.httpBody = formData.makeBody()
+</span><span>
+</span><span style="color:#b48ead;">let</span><span> (data, response) = </span><span style="color:#b48ead;">try</span><span> await URLSession.shared.data(</span><span style="color:#b48ead;">for</span><span>: req)
+</span></code></pre>
+<p>For the reference here is the full implementation of our <code>MultipartFormData</code>:</p>
+<pre data-lang="swift" style="background-color:#2b303b;color:#c0c5ce;" class="language-swift "><code class="language-swift" data-lang="swift"><span style="color:#65737e;">// MultipartFormData.swift
+</span><span>
+</span><span style="color:#b48ead;">struct</span><span> MultipartFormData {
+</span><span>    </span><span style="color:#b48ead;">public let</span><span> boundary = </span><span style="color:#a3be8c;">&quot;__MY_MAGIC_IDENTIFIER__&quot;
+</span><span>    </span><span style="color:#b48ead;">private var</span><span> data = Data()
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">public var</span><span> contentType: String {
+</span><span>        </span><span style="color:#a3be8c;">&quot;multipart/form-data; charset=utf-8; boundary=</span><span>\(boundary)</span><span style="color:#a3be8c;">&quot;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">mutating func </span><span>addString(_ value: String, forField field: String) {
+</span><span>        </span><span style="color:#b48ead;">var</span><span> fieldString = </span><span style="color:#a3be8c;">&quot;--</span><span>\(boundary)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Disposition: form-data; name=</span><span style="color:#96b5b4;">\&quot;</span><span>\(key)</span><span style="color:#96b5b4;">\&quot;\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Type: text/plain; charset=utf-8</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;</span><span>\(string)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>
+</span><span>        data.append(fieldString.data(using: .utf8)!)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">mutating func </span><span>addFile(named name: String, data fileData: String, mimeType: String, forField field: String) {
+</span><span>        </span><span style="color:#b48ead;">var</span><span> fieldString = </span><span style="color:#a3be8c;">&quot;--</span><span>\(boundary)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>
+</span><span>        </span><span style="color:#65737e;">// Here we add filename as well
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Disposition: form-data; name=</span><span style="color:#96b5b4;">\&quot;</span><span>\(key)</span><span style="color:#96b5b4;">\&quot;</span><span style="color:#a3be8c;">; filename=&quot;</span><span>\(name)</span><span style="color:#a3be8c;">&quot;</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;Content-Type: </span><span>\(mimeType)</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>        fieldString += </span><span style="color:#a3be8c;">&quot;</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>
+</span><span>        data.append(fieldString.data(using: .utf8)!)
+</span><span>
+</span><span>        </span><span style="color:#65737e;">// we append the given file data as it is immediately after the details
+</span><span>        data.append(fileData)
+</span><span>        data.append(</span><span style="color:#a3be8c;">&quot;</span><span style="color:#96b5b4;">\r\n</span><span style="color:#a3be8c;">&quot;</span><span>.data(using: .utf8)!)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">mutating func </span><span>makeBody() -&gt; Data {
+</span><span>        </span><span style="color:#b48ead;">let</span><span> terminator = </span><span style="color:#a3be8c;">&quot;--</span><span>\(boundary)</span><span style="color:#a3be8c;">--&quot;
+</span><span>        data.append(terminator.data(encoding: .utf8)!)
+</span><span>        </span><span style="color:#b48ead;">return</span><span> data
+</span><span>    }
+</span><span>}
+</span></code></pre>
+
+    </article>
+    </div>
+
+    </div>
+
+    <div style="font-size: 13px; padding: 20px var(--content-padding); color: hsla(0, 0, 0.5, 1.0); text-align: center;">
+        Copyright © 2023 Umur Gedik. All rights reserved.
+    </div>
+</body>
+</html>

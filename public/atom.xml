@@ -4,8 +4,182 @@
     <link href="https://umurgdk.dev/atom.xml" rel="self" type="application/atom+xml"/>
     <link href="https://umurgdk.dev"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    <updated>2023-09-11T00:00:00+00:00</updated>
+    <updated>2023-09-26T00:00:00+00:00</updated>
     <id>https://umurgdk.dev/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Uploading files with URLSession using multipart requests</title>
+        <published>2023-09-26T00:00:00+00:00</published>
+        <updated>2023-09-26T00:00:00+00:00</updated>
+        <author>
+          <name>Umur Gedik</name>
+        </author>
+        <link rel="alternate" href="https://umurgdk.dev/articles/uploading-files-with-urlsession/" type="text/html"/>
+        <id>https://umurgdk.dev/articles/uploading-files-with-urlsession/</id>
+        
+        <content type="html">&lt;p&gt;While working on my macOS Mastodon client Fil, I needed to upload media files to post statuses with images and videos attached. Mastodon API allows file uploads with &lt;code&gt;multipart&#x2F;form-data&lt;&#x2F;code&gt; encoded http request body. If you ever develop web applications with forms in it, this is what basically browsers do that when you have files in your forms by default. Encoding is pretty straight forward and a simple implementation in swift doesn’t takes more than 30 lines of code. So instead of including Alamofire in your next project just to support file uploads, you can write it yourself or copy paste the one I share in this post.&lt;&#x2F;p&gt;
+&lt;p&gt;Multipart&#x2F;form-data requests consist of a magic &lt;strong&gt;boundary&lt;&#x2F;strong&gt; value and list of values (form fields) separated by that boundary in the body of the request. Boundary acts as a field separator, so that the server can understand where each field begins and ends. This is espacially important since these types of requests usually embeds binary data in the body of the request, so that simple new line characters like &lt;code&gt;\r\n&lt;&#x2F;code&gt; may not be sufficient.&lt;&#x2F;p&gt;
+&lt;p&gt;A simple request representing two &lt;code&gt;String&lt;&#x2F;code&gt; fields (&lt;code&gt;title&lt;&#x2F;code&gt; and &lt;code&gt;description&lt;&#x2F;code&gt;) may look like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;http&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-http &quot;&gt;&lt;code class=&quot;language-http&quot; data-lang=&quot;http&quot;&gt;&lt;span&gt;POST &#x2F;upload&#x2F;image HTTP&#x2F;1.1
+&lt;&#x2F;span&gt;&lt;span&gt;Host: api.example.com
+&lt;&#x2F;span&gt;&lt;span&gt;Content-Type: multipart&#x2F;form-data; charset=utf-8; boundary=__MY_MAGIC_IDENTIFIER__
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;--__MY_MAGIC_IDENTIFIER
+&lt;&#x2F;span&gt;&lt;span&gt;Content-Disposition: form-data; name=&amp;quot;title&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;My blog title
+&lt;&#x2F;span&gt;&lt;span&gt;--__MY_MAGIC_IDENTIFIER
+&lt;&#x2F;span&gt;&lt;span&gt;Content-Disposition: form-data; name=&amp;quot;description&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;Some description about my blog
+&lt;&#x2F;span&gt;&lt;span&gt;--__MY_MAGIC_IDENTIFIER--
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;In this example &lt;code&gt;Content-Type&lt;&#x2F;code&gt; is set to &lt;code&gt;multipart&#x2F;form-data&lt;&#x2F;code&gt; with utf8 encoding and the boundary is defined as &lt;code&gt;__MY_MAGIC_IDENTIFIER__&lt;&#x2F;code&gt;, but you can choose your own identifier. In my app this is set to &lt;code&gt;__X_FIL_MULTIPART_BOUNDARY__&lt;&#x2F;code&gt;. Also the underscores are optional and stylistic in these examples.&lt;&#x2F;p&gt;
+&lt;p&gt;Actual &lt;code&gt;httpBody&lt;&#x2F;code&gt; of the &lt;code&gt;URLRequest&lt;&#x2F;code&gt; starts just after the empty line after the headers. In this example the body starts with the &lt;strong&gt;boundary separator&lt;&#x2F;strong&gt;. Boundary separators are the magic boundary identifier prefixed with 2 dashes “&lt;code&gt;--&lt;&#x2F;code&gt;”. After the separator, we should define which field of the form data we are going to include with &lt;code&gt;Content-Disposition&lt;&#x2F;code&gt; attribute. It’s format self explanatory, and arguments (just like headers) are separated with “&lt;code&gt;;&lt;&#x2F;code&gt;” character. For string encoded fields this definition is sufficient, but for file fields, file name can be defined with &lt;code&gt;filename=&amp;quot;myfile.jpg&amp;quot;&lt;&#x2F;code&gt; argument.&lt;&#x2F;p&gt;
+&lt;p&gt;After all the form fields &lt;code&gt;httpBody&lt;&#x2F;code&gt; should include a terminator to indicate there are no more data is provided. Terminator is the magic boundary identifier surrounded with 2 dashes “&lt;code&gt;--&lt;&#x2F;code&gt;” on both sides; like “&lt;code&gt;--__MY_MAGIC_IDENTIFIER__--&lt;&#x2F;code&gt;”. Make sure this terminator is only included at the end of the body, and do not put “&lt;code&gt;--&lt;&#x2F;code&gt;” at the end of the &lt;strong&gt;field separators&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;We can create a swift struct to abstract these details from our networking code. To start with supporting string fields:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;swift&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-swift &quot;&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; MultipartFormData.swift
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; MultipartFormData {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public let&lt;&#x2F;span&gt;&lt;span&gt; boundary = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;__MY_MAGIC_IDENTIFIER__&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private var&lt;&#x2F;span&gt;&lt;span&gt; data = Data()
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public var&lt;&#x2F;span&gt;&lt;span&gt; contentType: String {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;multipart&#x2F;form-data; charset=utf-8; boundary=&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;addString(_ value: String, forField field: String) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var&lt;&#x2F;span&gt;&lt;span&gt; fieldString = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;--&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Disposition: form-data; name=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(key)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Type: text&#x2F;plain; charset=utf-8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(string)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(fieldString.data(using: .utf8)!)
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;makeBody() -&amp;gt; Data {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; terminator = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;--&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;--&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(terminator.data(encoding: .utf8)!)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; data
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;As you may notice, instead of “&lt;code&gt;\n&lt;&#x2F;code&gt;” HTTP use “&lt;code&gt;\r\n&lt;&#x2F;code&gt;” for empty lines. Every field immediately starts with the &lt;strong&gt;boundary separator&lt;&#x2F;strong&gt; end ends with an empty line. And the &lt;strong&gt;terminator&lt;&#x2F;strong&gt; in the &lt;code&gt;makeBody&lt;&#x2F;code&gt; method does not includes an empty line at the end. We can use this helper with &lt;code&gt;URLSession&lt;&#x2F;code&gt; as:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;swift&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-swift &quot;&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var&lt;&#x2F;span&gt;&lt;span&gt; formData = MultipartFormData()
+&lt;&#x2F;span&gt;&lt;span&gt;formData.addString(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Umur Gedik&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;, forField: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;name&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;formData.addString(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Turkey&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;, forField: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;location&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var&lt;&#x2F;span&gt;&lt;span&gt; req = URLRequest(url: myApiUrl)
+&lt;&#x2F;span&gt;&lt;span&gt;req.setValue(formData.contentType, forHTTPHeaderField: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Type&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;req.httpBody = formData.makeBody()
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; (data, response) = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span&gt; await URLSession.shared.data(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt;: req)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Adding support for file uploads are not that difficult. It requires an additional &lt;code&gt;Content-Type&lt;&#x2F;code&gt; attribute for the file field to let the server know what kind of file data we are sending. An example HTTP request including a file looks like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;http&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-http &quot;&gt;&lt;code class=&quot;language-http&quot; data-lang=&quot;http&quot;&gt;&lt;span&gt;POST &#x2F;upload&#x2F;image HTTP&#x2F;1.1
+&lt;&#x2F;span&gt;&lt;span&gt;Host: api.example.com
+&lt;&#x2F;span&gt;&lt;span&gt;Content-Type: multipart&#x2F;form-data; charset=utf-8; boundary=__MY_MAGIC_IDENTIFIER__
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;--__MY_MAGIC_IDENTIFIER
+&lt;&#x2F;span&gt;&lt;span&gt;Content-Disposition: form-data; name=&amp;quot;name&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;Umur Gedik
+&lt;&#x2F;span&gt;&lt;span&gt;--__MY_MAGIC_IDENTIFIER
+&lt;&#x2F;span&gt;&lt;span&gt;Content-Disposition: form-data; name=&amp;quot;avatar&amp;quot;; filename=&amp;quot;avatar.jpg&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;Content-Type: image&#x2F;jpeg
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;BINARY JPEG DATA IS NOT SHOWN HERE&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;--__MY_MAGIC_IDENTIFIER--
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Implementation in our &lt;code&gt;MultipartFormData&lt;&#x2F;code&gt; should append the given &lt;code&gt;Data&lt;&#x2F;code&gt; as it is to the body after the separator and the &lt;code&gt;Content-Disposition&lt;&#x2F;code&gt; like:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;swift&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-swift &quot;&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; MultipartFormData.swift
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; MultipartFormData {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;addFile(named name: String, data fileData: String, mimeType: String, forField field: String) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var&lt;&#x2F;span&gt;&lt;span&gt; fieldString = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;--&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Here we add filename as well
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Disposition: form-data; name=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(key)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;; filename=&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(name)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Type: &lt;&#x2F;span&gt;&lt;span&gt;\(mimeType)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(fieldString.data(using: .utf8)!)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; we append the given file data as it is immediately after the details
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(fileData)
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;.data(using: .utf8)!)
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;addFile&lt;&#x2F;code&gt; method introduces &lt;code&gt;filename&lt;&#x2F;code&gt; and &lt;code&gt;mimeType&lt;&#x2F;code&gt; to inform the server about the details of our file to upload. &lt;code&gt;mimeType&lt;&#x2F;code&gt; can be found by &lt;code&gt;UTType&lt;&#x2F;code&gt; in &lt;code&gt;UniformTypeIdentifiers&lt;&#x2F;code&gt; module. Example usage may look like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;swift&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-swift &quot;&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;UniformTypeIdentifiers
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var&lt;&#x2F;span&gt;&lt;span&gt; formData = MultipartFormData()
+&lt;&#x2F;span&gt;&lt;span&gt;formData.addString(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Umur Gedik&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;, forField: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;name&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;formData.addString(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Turkey&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;, forField: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;location&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; assuming we have a file URL
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; data = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span&gt; Data(contentsOf: fileURL)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; typeIdentifier = UTType(filenameExtension: url.pathExtension)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; mimeType = typeIdentifier.preferredMIMEType
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;formData.addFile(named: fileURL.lastPathComponent, data: data, mimeType: mimeType, forField: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;avatar&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var&lt;&#x2F;span&gt;&lt;span&gt; req = URLRequest(url: myApiUrl)
+&lt;&#x2F;span&gt;&lt;span&gt;req.setValue(formData.contentType, forHTTPHeaderField: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Type&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;req.httpBody = formData.makeBody()
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; (data, response) = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span&gt; await URLSession.shared.data(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt;: req)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;For the reference here is the full implementation of our &lt;code&gt;MultipartFormData&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;swift&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-swift &quot;&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; MultipartFormData.swift
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span&gt; MultipartFormData {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public let&lt;&#x2F;span&gt;&lt;span&gt; boundary = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;__MY_MAGIC_IDENTIFIER__&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private var&lt;&#x2F;span&gt;&lt;span&gt; data = Data()
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public var&lt;&#x2F;span&gt;&lt;span&gt; contentType: String {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;multipart&#x2F;form-data; charset=utf-8; boundary=&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;addString(_ value: String, forField field: String) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var&lt;&#x2F;span&gt;&lt;span&gt; fieldString = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;--&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Disposition: form-data; name=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(key)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Type: text&#x2F;plain; charset=utf-8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(string)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(fieldString.data(using: .utf8)!)
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;addFile(named name: String, data fileData: String, mimeType: String, forField field: String) {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;var&lt;&#x2F;span&gt;&lt;span&gt; fieldString = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;--&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Here we add filename as well
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Disposition: form-data; name=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(key)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;; filename=&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;\(name)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;Content-Type: &lt;&#x2F;span&gt;&lt;span&gt;\(mimeType)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        fieldString += &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(fieldString.data(using: .utf8)!)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; we append the given file data as it is immediately after the details
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(fileData)
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\r\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;.data(using: .utf8)!)
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mutating func &lt;&#x2F;span&gt;&lt;span&gt;makeBody() -&amp;gt; Data {
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; terminator = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;quot;--&lt;&#x2F;span&gt;&lt;span&gt;\(boundary)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;--&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        data.append(terminator.data(encoding: .utf8)!)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; data
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+        
+    </entry>
     <entry xml:lang="en">
         <title>Distribute macOS Applications as DMG Images</title>
         <published>2023-09-11T00:00:00+00:00</published>
