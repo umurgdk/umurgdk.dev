@@ -25,6 +25,13 @@
     <link rel="shortcut icon" href="/favicon.png" type="image/png" />
     <link rel="alternate" type="application/rss+xml" title="RSS Feed for umurgdk.dev" href="/atom.xml" />
     
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            var searchParams = new URLSearchParams(window.location.search);
+            var element = document.getElementById('visitord-element');
+            element.setAttribute('src', 'https://api.umurgdk.dev/visitord/' + document.location.pathname + '?' + searchParams);
+        });
+    </script>
 </head>
 <body>
     <div id="content-wrapper">
@@ -469,6 +476,7 @@
 
     <div style="font-size: 13px; padding: 20px var(--content-padding); color: hsla(0, 0, 0.5, 1.0); text-align: center;">
         Copyright © 2023 Umur Gedik. All rights reserved.
+        <img id="visitord-element" style="opacity: 0;">
     </div>
 </body>
 </html>
