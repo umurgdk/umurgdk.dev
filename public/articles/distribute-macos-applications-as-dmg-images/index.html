@@ -31,7 +31,7 @@
             var searchParams = new URLSearchParams(window.location.search);
             var element = document.getElementById('visitord-element');
             var query = searchParams.size > 0 ? '?' + searchParams : '';
-            element.setAttribute('src', 'http://localhost:8901/' + document.location.pathname + query);
+            element.setAttribute('src', 'https://api.umurgdk.dev/visitord/' + document.location.pathname + query);
         });
     </script>
 </head>
