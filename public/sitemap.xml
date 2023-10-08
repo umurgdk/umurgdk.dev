@@ -20,6 +20,10 @@
         <lastmod>2023-09-11</lastmod>
     </url>
     <url>
+        <loc>https://umurgdk.dev/articles/implementing-custom-controls-with-menu-in-uikit/</loc>
+        <lastmod>2023-10-08</lastmod>
+    </url>
+    <url>
         <loc>https://umurgdk.dev/articles/uploading-files-with-urlsession/</loc>
         <lastmod>2023-09-26</lastmod>
     </url>
@@ -67,6 +71,12 @@
     </url>
     <url>
         <loc>https://umurgdk.dev/tags/swift/</loc>
+    </url>
+    <url>
+        <loc>https://umurgdk.dev/tags/uikit/</loc>
+    </url>
+    <url>
+        <loc>https://umurgdk.dev/tags/uimenu/</loc>
     </url>
     <url>
         <loc>https://umurgdk.dev/tags/urlsession/</loc>

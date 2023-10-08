@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementing Custom Controls With UIMenu in UIKit by Umur Gedik</title>
+    <link rel="stylesheet" href="/main.css">
+
+    
+<meta name="description" content="How to create custom controls which acts like a UIButton with an associated menu">
+<meta name="keyword" content="Swift, UIKit, UIMenu">
+
+<meta property="og:title" content="Implementing Custom Controls With UIMenu in UIKit by Umur Gedik"/>
+<meta property="og:description" content="How to create custom controls which acts like a UIButton with an associated menu" />
+<meta property="og:url" content="https://umurgdk.dev/articles/implementing-custom-controls-with-menu-in-uikit/" />
+<meta property="og:type" content="article" />
+<meta property="og:image" content="https://umurgdk.dev/bio/avatar@2x.jpg">
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@umurgdk" />
+<meta name="twitter:title" content="Implementing Custom Controls With UIMenu in UIKit by Umur Gedik" />
+<meta name="twitter:description" content="How to create custom controls which acts like a UIButton with an associated menu"/>
+<meta name="twitter:image" content="https://umurgdk.dev/bio/avatar@2x.jpg"/>
+
+<link rel="shortcut icon" href="/favicon.png" type="image/png" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed for umurgdk.dev" href="/atom.xml" />
+
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            var searchParams = new URLSearchParams(window.location.search);
+            var element = document.getElementById('visitord-element');
+            var query = searchParams.size > 0 ? '?' + searchParams : '';
+            element.setAttribute('src', 'https://api.umurgdk.dev/visitord/' + document.location.pathname + query);
+        });
+    </script>
+</head>
+<body>
+    <div id="content-wrapper">
+        
+    <div class="article-page">
+    
+    
+
+<header class="section-highlight section-separator">
+    <div class="avatar mobile-only">
+        
+    <picture>
+        
+            <source srcset="/bio/avatar@1x.jpg 1x, /bio/avatar@2x.jpg 2x, /bio/avatar@3x.jpg 3x, " type="image/jpg">
+        
+            <source srcset="/bio/avatar@1x.webp 1x, /bio/avatar@2x.webp 2x, /bio/avatar@3x.webp 3x, " type="image/webp">
+        
+        <img src="/bio/avatar@1x.jpg" alt="avatar">
+    </picture>
+
+    </div>
+    <div class="title-bar">
+        <div class="site-name">
+            <a href="https:&#x2F;&#x2F;umurgdk.dev" class="site-title">Umur Gedik</a>
+            <p class="site-subtitle">Software Developer & Designer</p>
+        </div>
+
+        
+    </div>
+
+    
+</header>
+
+
+    <article>
+        <div class="meta">
+            <span class="date">08 Oct 2023</span>
+            <div class="tags">
+                
+                <a href="https://umurgdk.dev/tags/swift/" class="tag">#Swift</a>
+                
+                <a href="https://umurgdk.dev/tags/uikit/" class="tag">#UIKit</a>
+                
+                <a href="https://umurgdk.dev/tags/uimenu/" class="tag">#UIMenu</a>
+                
+            </div>
+        </div>
+        <h1>Implementing Custom Controls With UIMenu in UIKit</h1>
+        <p>Recently I was working on a client project with a custom control in a navigation bar to show the associated menu on tap. UIKit supports this behavior out of the box with <code>UIButton</code> when you associate an <code>UIMenu</code> and set it’s <code>showsMenuAsPrimaryAction</code>. </p>
+<div class="overlay-container">
+<pre data-lang="swift" style="background-color:#2b303b;color:#c0c5ce;" class="language-swift "><code class="language-swift" data-lang="swift"><span style="color:#b48ead;">let</span><span> button = UIButton(type: .system)
+</span><span>button.setTitle(</span><span style="color:#a3be8c;">&quot;Menu Button&quot;</span><span>, </span><span style="color:#b48ead;">for</span><span>: .normal)
+</span><span>button.menu = UIMenu(
+</span><span>    children: [
+</span><span>        UIAction(
+</span><span>            title: </span><span style="color:#a3be8c;">&quot;Command 1&quot;</span><span>,
+</span><span>            handler: { _ </span><span style="color:#b48ead;">in</span><span> }
+</span><span>        )
+</span><span>    ]
+</span><span>)
+</span><span>
+</span><span>button.showsMenuAsPrimaryAction = </span><span style="color:#b48ead;">true
+</span></code></pre>
+<video class="overlay-tr" width="365" autoplay loop playsinline disablepictureinpicture disableremoteplayback id="video-1">
+    <source src="uibutton_menu.mp4" type="video/mp4">
+    <source src="uibutton_menu.webm" type="video/webm">
+</video>
+</div>
+<p>If all you need is a simple button with a menu, use <code>UIButton</code> by all means. If you want to have this behavior on your custom view it need to extend <code>UIControl</code> instead of <code>UIView</code>. Unfortunately there is no <code>.menu</code> property on <code>UIControl</code> class.</p>
+<p>Another way to showing menus is adding an <code>UIContextMenuInteraction</code> to your view. But context menu interaction is triggered by long press gesture, and also it adds custom styling to your view while the long press gesture in progress. As the name suggests it is a context menu after all.</p>
+<div class="overlay-container">
+<pre data-lang="swift" style="background-color:#2b303b;color:#c0c5ce;" class="language-swift "><code class="language-swift" data-lang="swift"><span style="color:#b48ead;">let</span><span> label = UILabel()
+</span><span>label.text = </span><span style="color:#a3be8c;">&quot;A Label&quot;
+</span><span>
+</span><span style="color:#b48ead;">let</span><span> interaction = UIContextMenuInteraction(delegate: </span><span style="color:#b48ead;">self</span><span>)
+</span><span>label.addInteraction(interaction)
+</span><span>label.isUserInteractionEnabled = </span><span style="color:#b48ead;">true
+</span><span>
+</span><span style="color:#b48ead;">extension</span><span> ViewController: UIContextMenuInteractionDelegate {
+</span><span>    </span><span style="color:#b48ead;">func </span><span>contextMenuInteraction(
+</span><span>        _ interaction: UIContextMenuInteraction,
+</span><span>        configurationForMenuAtLocation location: CGPoint
+</span><span>    ) -&gt; UIContextMenuConfiguration? {
+</span><span>        UIContextMenuConfiguration(actionProvider: { suggestions </span><span style="color:#b48ead;">in
+</span><span>            </span><span style="color:#b48ead;">let</span><span> actions = [
+</span><span>                UIAction(
+</span><span>                    title: </span><span style="color:#a3be8c;">&quot;Command 1&quot;</span><span>,
+</span><span>                    handler: { _ </span><span style="color:#b48ead;">in </span><span>}
+</span><span>                )
+</span><span>            ]
+</span><span>
+</span><span>            </span><span style="color:#b48ead;">return</span><span> UIMenu(children: actions)
+</span><span>        })
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<video class="overlay-tr" width="250" autoplay loop playsinline disablepictureinpicture disableremoteplayback id="video-1">
+    <source src="context_menu.mp4" type="video/mp4">
+    <source src="context_menu.webm" type="video/webm">
+</video>
+</div>
+<p><code>UIControl</code> has a special treatment for <code>UIContextMenuInteraction</code>. If we extend our custom view from <code>UIControl</code> and enable context menu interaction via <code>isContextMenuInteractionEnabled</code> and <code>showsMenuAsPrimaryAction</code> we can achieve the same behavior as <code>UIButton</code> has. </p>
+<div class="overlay-container">
+<pre data-lang="swift" style="background-color:#2b303b;color:#c0c5ce;" class="language-swift "><code class="language-swift" data-lang="swift"><span style="color:#b48ead;">class</span><span> CustomView: UIControl {
+</span><span>    </span><span style="color:#b48ead;">func </span><span>setupViews() {
+</span><span>        </span><span style="color:#b48ead;">let</span><span> label = UILabel()
+</span><span>        label.text = </span><span style="color:#a3be8c;">&quot;A Label&quot;
+</span><span>        addSubview(label)
+</span><span>
+</span><span>        </span><span style="color:#65737e;">// setup layout constraints...
+</span><span>
+</span><span>        </span><span style="color:#65737e;">// Enable context menu interaction
+</span><span>        isContextMenuInteractionEnabled = </span><span style="color:#b48ead;">true
+</span><span>        showsMenuAsPrimaryAction = </span><span style="color:#b48ead;">true
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">lazy var</span><span> menuConfig = UIContextMenuConfiguration(actionProvider: {
+</span><span>        suggestedActions </span><span style="color:#b48ead;">in
+</span><span>        </span><span style="color:#b48ead;">let</span><span> actions = [
+</span><span>            UIAction(
+</span><span>                title: </span><span style="color:#a3be8c;">&quot;Command 1&quot;</span><span>,
+</span><span>                handler: { _ </span><span style="color:#b48ead;">in</span><span> }
+</span><span>            )
+</span><span>        ]
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">return</span><span> UIMenu(children: actions)
+</span><span>    })
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">override func </span><span>contextMenuInteraction(
+</span><span>        _ interaction: UIContextMenuInteraction,
+</span><span>        configurationForMenuAtLocation location: CGPoint
+</span><span>    ) -&gt; UIContextMenuConfiguration? {
+</span><span>        menuConfig
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<video class="overlay-tr" width="300" autoplay loop playsinline disablepictureinpicture disableremoteplayback id="video-1">
+    <source src="uicontrol_menu.mp4" type="video/mp4">
+    <source src="uicontrol_menu.webm" type="video/webm">
+</video>
+</div>
+<p>Keep in mind <code>UIControl</code> already conforms to <code>UIContextMenuInteractionDelegate</code> protocol, and <code>isContextMenuInteractionEnabled</code> property automatically adds <code>UIContextMenuInteraction</code> to the control. Make sure to check the <a href="https://developer.apple.com/documentation/uikit/uicontextmenuinteractiondelegate">delegate protocol</a> for further customizations of the interaction.</p>
+
+    </article>
+    </div>
+
+    </div>
+
+    <div style="font-size: 13px; padding: 20px var(--content-padding); color: hsla(0, 0, 0.5, 1.0); text-align: center;">
+        Copyright © 2023 Umur Gedik. All rights reserved.
+        <img id="visitord-element" style="opacity: 0;">
+    </div>
+</body>
+</html>
